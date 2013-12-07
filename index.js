@@ -34,7 +34,7 @@ var store_args = function(args_stock, args_delivery){
   return [args_delivery[1] ? apply_args(args_stock[0], args_delivery[2]) : args_stock[0],
           args_delivery[3] ? apply_args(args_stock[1], args_delivery[4]) : args_stock[1],
           args_stock[2],
-          args_stock[3] - args_delivery[0]
+          args_stock[3] + args_delivery[0]
          ];
 };
 
@@ -202,16 +202,18 @@ var partialize = module.exports = function(f){
       // One-time shoulder clones so instances don't clobber each other.
       // Each instance, here on, mutates the shoulders for performance gain
       // Instances *never* mutate the lha/rha **values** thus we do not need to worry about "deep cloning"
-      var args_stock = [shallow_clone(_args_stock[0]), shallow_clone(_args_stock[1]), _args_stock[2], _args_stock[3]];
       var args_new_raw = Array.prototype.slice.apply(arguments);
-      var args_stock_ = args_new_raw.length ? store_args(args_stock, format_delivery(args_new_raw, args_stock[3])) : args_stock ;
-      return is_partial(args_new_raw) || args_stock_[3] ?
+      var space_before = _args_stock[2] - _args_stock[3];
+      var args_stock = [shallow_clone(_args_stock[0]), shallow_clone(_args_stock[1]), _args_stock[2], _args_stock[3]];
+      var args_stock_ = args_new_raw.length ? store_args(args_stock, format_delivery(args_new_raw, space_before)) : args_stock ;
+      var space_after = args_stock_[2] - args_stock_[3];
+      return is_partial(args_new_raw) || space_after ?
         accumulate_arguments(args_stock_) :
         f.apply(null, resolve_arg_storage(args_stock_)) ;
     };
   // args_stock has the following fields:
-  // [<lha>, <rha>, <capacity>, <available-space>]
-  }([{}, {}, f.length, f.length]));
+  // [<lha>, <rha>, <capacity>, <capacity-used>]
+  }([{}, {}, f.length, 0]));
 };
 
 partialize._ = _;
