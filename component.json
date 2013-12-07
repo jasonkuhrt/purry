@@ -1,0 +1,14 @@
+{
+  "name": "purry",
+  "repo": "jasonkuhrt/purry",
+  "description": "Symbiotic, high-performance currying and partial application",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "purry",
+  "version": "0.0.0",
+  "description": "Symbiotic, high-performance currying and partial application",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha ./spec --reporter spec",
+    "bench": "node ./bench/index.js"
+  },
+  "keywords": [
+    "functional",
+    "function",
+    "functions",
+    "currying",
+    "partial",
+    "application",
+    "partial-right",
+    "api",
+    "sugar"
+  ],
+  "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "mocha": "~1.15.1",
+    "benchmark": "~1.0.0",
+    "lodash": "~2.4.1"
+  }
+}
