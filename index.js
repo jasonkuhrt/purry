@@ -204,6 +204,9 @@ var partialize = module.exports = function(f){
       // Instances *never* mutate the lha/rha **values** thus we do not need to worry about "deep cloning"
       var args_new_raw = Array.prototype.slice.apply(arguments);
       var space_before = _args_stock[2] - _args_stock[3];
+      if (is_no_curry_no_partial_case(_args_stock, args_new_raw)){
+        return f.apply(null, args_new_raw);
+      }
       var args_stock = [shallow_clone(_args_stock[0]), shallow_clone(_args_stock[1]), _args_stock[2], _args_stock[3]];
       var args_stock_ = args_new_raw.length ? store_args(args_stock, format_delivery(args_new_raw, space_before)) : args_stock ;
       var space_after = args_stock_[2] - args_stock_[3];
@@ -222,6 +225,9 @@ partialize.___ = ___;
 
 
 // Helpers
+function is_no_curry_no_partial_case(stock, new_args){
+  return !stock[3] && new_args.length === stock[2] && !is_partial(new_args);
+}
 
 function is_partial(args){
   return args.length && (~args.indexOf(_) || ~args.indexOf(___));
