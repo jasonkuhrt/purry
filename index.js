@@ -139,15 +139,22 @@ var apply_args = function(stock_shoulder, delivery_shoulder){
 // hole is found.
 //
 apply_arg = function(stock_shoulder, arg, arg_index, arg_offset){
-  //console.log('arg value %d: index: %d | offset: %d | free: %s', arg, arg_index, arg_offset, !stock_shoulder.hasOwnProperty(arg_index));
-  if (stock_shoulder.hasOwnProperty(arg_index)) {
-    return apply_arg(stock_shoulder, arg, arg_index + 1, arg_offset);
-  } else if (arg_offset) {
-    return apply_arg(stock_shoulder, arg, arg_index + 1, --arg_offset);
-  } else {
-    stock_shoulder[arg_index] = arg;
-    return arg_index + 1;
+  // console.log('arg value %d: index: %d | offset: %d | free: %s', arg, arg_index, arg_offset, !stock_shoulder.hasOwnProperty(arg_index));
+  // Find the first free space for this arg in this shoulder.
+  var spot_not_found = true
+  while (spot_not_found) {
+    if (stock_shoulder.hasOwnProperty(arg_index)) {
+      arg_index++;
+    } else if(arg_offset) {
+      arg_index++;
+      arg_offset--;
+    } else {
+      spot_not_found = false;
+    }
   }
+
+  stock_shoulder[arg_index] = arg;
+  return arg_index + 1;
 }
 
 
@@ -189,7 +196,7 @@ resolve_arg_storage = function(args_stock){
 
 
 var partialize = module.exports = function(f){
-  if (f.length === 0) throw new Error('parry is not compatible with variable-argument functions.')
+  if (f.length === 0) throw new Error('purry is not compatible with variable-argument functions.')
   return (function accumulate_arguments(_args_stock){
     return function(/* ...args_new_raw */){
       // One-time shoulder clones so instances don't clobber each other.
