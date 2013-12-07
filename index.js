@@ -29,14 +29,7 @@ var _ = '_hole_';
 
 
 
-var store_args = function(args_stock, args_delivery){
-  //console.log('\nstore_args:\n', args_delivery);
-  return [args_delivery[1] ? apply_args(args_stock[0], args_delivery[2]) : args_stock[0],
-          args_delivery[3] ? apply_args(args_stock[1], args_delivery[4]) : args_stock[1],
-          args_stock[2],
-          args_stock[3] + args_delivery[0]
-         ];
-};
+
 
 var format_delivery = function(delivery_raw, space){
   var delivery_lha = {};
@@ -159,14 +152,11 @@ apply_arg = function(stock_shoulder, arg, arg_index, arg_offset){
 
 
 
-resolve_arg_storage = function(args_stock){
+resolve_arg_storage = function(lha, rha){
   //console.log('\nresolve_arg_storage:\nargs_stock: %j', args_stock);
-  var lha = args_stock[0];
-  var rha = args_stock[1];
-  // TODO not cross-browser compatible
   // Sorting is lexicgraphically, works with numbers here because keys are strings '0' not 0
   // '0' will appear before '1' etc
-  var rha_indexes = Object.keys(rha);
+  var rha_indexes = Object.keys(rha); // TODO not cross-browser compatible
   var rha_indexes_sorted = rha_indexes.sort();
   var i = rha_indexes_sorted.length - 1;
   var lha_i_reached = 0;
@@ -197,26 +187,38 @@ resolve_arg_storage = function(args_stock){
 
 var partialize = module.exports = function(f){
   if (f.length === 0) throw new Error('purry is not compatible with variable-argument functions.')
-  return (function accumulate_arguments(_args_stock){
+  return (function accumulate_arguments(_lsa, _rsa, stock_capacity, _stock_capacity_used){
     return function(/* ...args_new_raw */){
+      var args_new_count = arguments.length;
+      var args_new_raw = Array.prototype.slice.apply(arguments);
+
+      if (is_no_curry_no_partial_case(stock_capacity, _stock_capacity_used, args_new_raw)){
+        return f.apply(null, args_new_raw);
+      }
+
       // One-time shoulder clones so instances don't clobber each other.
       // Each instance, here on, mutates the shoulders for performance gain
       // Instances *never* mutate the lha/rha **values** thus we do not need to worry about "deep cloning"
-      var args_new_raw = Array.prototype.slice.apply(arguments);
-      var space_before = _args_stock[2] - _args_stock[3];
-      if (is_no_curry_no_partial_case(_args_stock, args_new_raw)){
-        return f.apply(null, args_new_raw);
+      var lsa = shallow_clone(_lsa);
+      var rsa = shallow_clone(_rsa);
+      var stock_capacity_used = _stock_capacity_used;
+
+      if (args_new_count) {
+        var delivery = format_delivery(args_new_raw, stock_capacity - _stock_capacity_used);
+        // TODO optimize by calling in the if condition below
+        if (delivery[0]) {
+          stock_capacity_used += delivery[0];
+          if (delivery[1]) apply_args(lsa, delivery[2]);
+          if (delivery[3]) apply_args(rsa, delivery[4]);
+        }
       }
-      var args_stock = [shallow_clone(_args_stock[0]), shallow_clone(_args_stock[1]), _args_stock[2], _args_stock[3]];
-      var args_stock_ = args_new_raw.length ? store_args(args_stock, format_delivery(args_new_raw, space_before)) : args_stock ;
-      var space_after = args_stock_[2] - args_stock_[3];
-      return is_partial(args_new_raw) || space_after ?
-        accumulate_arguments(args_stock_) :
-        f.apply(null, resolve_arg_storage(args_stock_)) ;
+
+
+      return delivered_partial(args_new_raw) || stock_capacity - stock_capacity_used ?
+        accumulate_arguments(lsa, rsa, stock_capacity, stock_capacity_used) :
+        f.apply(null, resolve_arg_storage(lsa, rsa)) ;
     };
-  // args_stock has the following fields:
-  // [<lha>, <rha>, <capacity>, <capacity-used>]
-  }([{}, {}, f.length, 0]));
+  }({}, {}, f.length, 0));
 };
 
 partialize._ = _;
@@ -225,11 +227,12 @@ partialize.___ = ___;
 
 
 // Helpers
-function is_no_curry_no_partial_case(stock, new_args){
-  return !stock[3] && new_args.length === stock[2] && !is_partial(new_args);
+
+function is_no_curry_no_partial_case(stock_capacity, stock_capacity_used, new_args){
+  return !stock_capacity_used && new_args.length === stock_capacity && !delivered_partial(new_args);
 }
 
-function is_partial(args){
+function delivered_partial(args){
   return args.length && (~args.indexOf(_) || ~args.indexOf(___));
 };
 
