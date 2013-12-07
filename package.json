@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha ./spec --reporter spec",
-    "bench": "node ./bench/index.js | tee bench/bench-results-$(date +%s).txt"
+    "bench": "node ./bench/index.js | tee bench/bench-results-$(date +%s).txt",
+    "bench-fast": "node ./bench/index.js 0.1"
   },
   "keywords": [
     "functional",

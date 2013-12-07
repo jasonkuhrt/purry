@@ -1,0 +1,11 @@
+echo_arguments_curried x 61,787 ops/sec ±0.52% (185 runs sampled)
+echo_arguments_purried x 40,080 ops/sec ±0.25% (163 runs sampled)
+Fastest is echo_arguments_curried
+
+
+echo_arguments x 31,123,218 ops/sec ±1.12% (175 runs sampled)
+echo_arguments_curried x 5,038,017 ops/sec ±0.56% (193 runs sampled)
+echo_arguments_purried x 2,538,435 ops/sec ±0.93% (175 runs sampled)
+Fastest is echo_arguments
+
+
