@@ -13,13 +13,18 @@ var purry = module.exports = function(f){
   }
   return (function accumulate_arguments(capacity, _capacity_used, _stock){
     return function(/* ...args_new */){
+      var arguments_count = arguments.length;
+
+      // Bail ASAP if no arguments given
+      if (!arguments_count) {
+        return capacity - _capacity_used ?
+          accumulate_arguments(capacity, _capacity_used, _stock) :
+          f.apply(null, _stock) ;
+      }
       // index for various loops below
       var i;
-      var args_new_count = arguments.length;
-      var instance_capacity = capacity - _capacity_used;
-      // TODO optimization case: 0 args_new_count
+      // TODO optimization case: 0 arguments_count
       // TODO optimization case: capacity === _capacity_used
-      var args_new = Array.prototype.slice.apply(arguments);
       //log('\n\nInvoked: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, args_new.map(function(x){ return x === _ ? '_' : x === ___ ? '___' : x ; }))
 
       // Clone stock, to avoid clobbering
@@ -38,7 +43,7 @@ var purry = module.exports = function(f){
       var arg_new;
       var stock_i = 0;
       var incby = 1;
-      var endloop = args_new_count;
+      var endloop = arguments_count;
       var offset = 0;
       i = 0;
       process_new_arguments:
@@ -46,7 +51,7 @@ var purry = module.exports = function(f){
         //if (stock_i >= (capacity || i < 0) break;
         // TODO needed? if (capacity === capacity_used) break;
         //log('\nend condition: %d !== %d | stock_i: %d', i, endloop, stock_i);
-        arg_new = args_new[i];
+        arg_new = arguments[i];
 
         if (arg_new === _) {
           is_args_partial = true;
@@ -59,9 +64,9 @@ var purry = module.exports = function(f){
           is_args_partial = true;
           incby = -1
           stock_i = capacity - 1;
-          //log('Hit shoulder ___ of size (%d)', (args_new_count - (i + 1)));
+          //log('Hit shoulder ___ of size (%d)', (arguments_count - (i + 1)));
           endloop = i;
-          i = args_new_count;
+          i = arguments_count;
           continue
         }
 

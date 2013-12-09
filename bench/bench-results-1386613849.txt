@@ -1,0 +1,22 @@
+echo_arguments_curried x 67,426 ops/sec ±9.05% (6 runs sampled)
+echo_arguments_purried x 438,503 ops/sec ±1.51% (6 runs sampled)
+Fastest is echo_arguments_purried
+
+
+all args at once: function x 34,130,734 ops/sec ±4.12% (6 runs sampled)
+all args at once: curry x 5,267,346 ops/sec ±1.81% (6 runs sampled)
+all args at once: purry x 2,130,719 ops/sec ±6.16% (6 runs sampled)
+Fastest is all args at once: function
+
+
+partial(echo_arguments) x 51,313 ops/sec ±9.14% (6 runs sampled)
+echo_arguments_purried(x,___)(...) x 413,854 ops/sec ±2.25% (6 runs sampled)
+partialRight(echo_arguments) x 51,982 ops/sec ±5.67% (6 runs sampled)
+echo_arguments_purried(___,x)(...) x 383,834 ops/sec ±2.16% (5 runs sampled)
+partial(echo_arguments) (some) x 185,411 ops/sec ±9.77% (6 runs sampled)
+echo_arguments_purried(x,...,___)(...) x 1,131,462 ops/sec ±0.52% (6 runs sampled)
+partialRight(echo_arguments) mixed with partial x 109,025 ops/sec ±7.03% (6 runs sampled)
+echo_arguments_purried left-and-right x 777,372 ops/sec ±1.05% (6 runs sampled)
+Fastest is echo_arguments_purried(x,...,___)(...)
+
+

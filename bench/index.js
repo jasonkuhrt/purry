@@ -18,15 +18,15 @@ var maxTime = Number(process.argv[2]) || 10;
 var suite = Benchmark.Suite('All arguments at once');
 var suite_results = [];
 
-suite.add('echo_arguments', function() {
+suite.add('all args at once: function', function() {
   echo_arguments(1,2,3,4,5,6);
 }, {maxTime:maxTime})
 
-.add('echo_arguments_curried', function() {
+.add('all args at once: curry', function() {
   echo_arguments_curried(1,2,3,4,5,6);
 }, {maxTime:maxTime})
 
-.add('echo_arguments_purried', function() {
+.add('all args at once: purry', function() {
   echo_arguments_purried(1,2,3,4,5,6);
 }, {maxTime:maxTime})
 
