@@ -33,6 +33,7 @@ suite.add('echo_arguments', function() {
 .on('cycle', function(event) {
   suite_results.push(String(event.target));
 })
+
 .on('complete', function() {
   suite_results.forEach(function(x){ console.log(x); });
   console.log('Fastest is %s\n\n', this.filter('fastest').pluck('name'));
@@ -56,6 +57,7 @@ suite_curries.add('echo_arguments_curried', function() {
 .on('cycle', function(event) {
   suite_curries_results.push(String(event.target));
 })
+
 .on('complete', function() {
   suite_curries_results.forEach(function(x){ console.log(x); });
   console.log('Fastest is %s\n\n', this.filter('fastest').pluck('name'));
@@ -68,29 +70,45 @@ suite_curries.add('echo_arguments_curried', function() {
 var suite_partial = Benchmark.Suite('partial application');
 var suite_partial_results = [];
 
-suite_partial.add('partial(echo_arguments)', function() {
+suite_partial
+
+.add('partial(echo_arguments)', function() {
   partial(partial(partial(partial(partial(partial(echo_arguments, 1), 2), 3), 4), 5), 6)();
+}, {maxTime:maxTime})
+
+.add('echo_arguments_purried(x,___)(...)', function() {
+  echo_arguments_purried(1,___)(2,___)(3,___)(4,___)(5,___)(6,___)();
 }, {maxTime:maxTime})
 
 .add('partialRight(echo_arguments)', function() {
   partialRight(partialRight(partialRight(partialRight(partialRight(partialRight(echo_arguments, 6), 5), 4), 3), 2), 1)();
 }, {maxTime:maxTime})
 
-.add('echo_arguments_purried (left)', function() {
-  echo_arguments_purried(1,___)(2,___)(3,___)(4,___)(5,___)(6,___)();
-}, {maxTime:maxTime})
-
-.add('echo_arguments_purried (right)', function() {
+.add('echo_arguments_purried(___,x)(...)', function() {
   echo_arguments_purried(___,6)(___,5)(___,4)(___,3)(___,2)(___,1)();
 }, {maxTime:maxTime})
 
-.on('error', function(err){
-  console.error(err)
-})
+.add('partial(echo_arguments) (some)', function() {
+  partial(echo_arguments, 1, 2, 3)(4, 5, 6);
+}, {maxTime:maxTime})
+
+.add('echo_arguments_purried(x,...,___)(...)', function() {
+  echo_arguments_purried(1,2,3,___)(4,5,6);
+}, {maxTime:maxTime})
+
+
+.add('partialRight(echo_arguments) mixed with partial', function() {
+  partialRight(partial(echo_arguments, 1, 2, 3), 5, 6)(4);
+}, {maxTime:maxTime})
+
+.add('echo_arguments_purried left-and-right', function() {
+  echo_arguments_purried(1,2,3,___)(___,5,6)(4);
+}, {maxTime:maxTime})
 
 .on('cycle', function(event) {
   suite_partial_results.push(String(event.target));
 })
+
 .on('complete', function() {
   suite_partial_results.forEach(function(x){ console.log(x); });
   console.log('Fastest is %s\n\n', this.filter('fastest').pluck('name'));

@@ -1,0 +1,22 @@
+echo_arguments_curried x 65,767 ops/sec ±15.24% (5 runs sampled)
+echo_arguments_purried x 235,844 ops/sec ±0.64% (6 runs sampled)
+Fastest is echo_arguments_purried
+
+
+echo_arguments x 32,617,508 ops/sec ±5.63% (6 runs sampled)
+echo_arguments_curried x 5,001,117 ops/sec ±5.25% (6 runs sampled)
+echo_arguments_purried x 1,173,020 ops/sec ±7.31% (6 runs sampled)
+Fastest is echo_arguments
+
+
+partial(echo_arguments) x 51,885 ops/sec ±4.52% (6 runs sampled)
+echo_arguments_purried(x,___)(...) x 195,689 ops/sec ±0.98% (6 runs sampled)
+partialRight(echo_arguments) x 56,154 ops/sec ±2.12% (6 runs sampled)
+echo_arguments_purried(___,x)(...) x 200,066 ops/sec ±0.43% (7 runs sampled)
+partial(echo_arguments) (some) x 191,621 ops/sec ±10.38% (6 runs sampled)
+echo_arguments_purried(x,...,___)(...) x 638,338 ops/sec ±1.87% (6 runs sampled)
+partialRight(echo_arguments) mixed with partial x 109,988 ops/sec ±7.35% (6 runs sampled)
+echo_arguments_purried left-and-right x 445,898 ops/sec ±5.48% (6 runs sampled)
+Fastest is echo_arguments_purried(x,...,___)(...)
+
+
