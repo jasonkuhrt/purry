@@ -1,6 +1,6 @@
 var ___ = '___send-to-shoulder___';
 var _ = '_hole_';
-//var log = 1 ? console.log : function(){} ;
+var log = 1 ? console.log : function(){} ;
 
 
 var purry = module.exports = function(f){
@@ -11,11 +11,16 @@ var purry = module.exports = function(f){
     initial_stock.push(_);
     i--;
   }
-  return accumulate_arguments(f, f.length, 0, initial_stock);
+  return accumulate_arguments(f, f.length, 0, initial_stock, 0, f.length - 1, false);
 };
 
 
-function accumulate_arguments(f, capacity, _capacity_used, _stock){
+// @f –– The wrapped function
+// @capacity –– The param count of f
+// @_capacity_used –– The remaining holes of _stock
+// @_stock –– The plugged holes so far
+// @_stock_i_min –– The minimum index to start stocking at.
+function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max, _f_has_holes){
   return function(){
     var arguments_count = arguments.length;
 
@@ -23,7 +28,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock){
     if (!arguments_count) {
       return capacity === _capacity_used ?
         f.apply(null, _stock) :
-        accumulate_arguments(f, capacity, _capacity_used, _stock) ;
+        accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max, _f_has_holes) ;
+
     }
 
     // TODO? Bail ASAP if all arguments given in single shot
@@ -32,7 +38,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock){
     // index for various loops below
     var i;
 
-    //log('\n\nInvoked: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, args_new.map(function(x){ return x === _ ? '_' : x === ___ ? '___' : x ; }))
+    // log('\n\nInvoked: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, arguments)
 
     // Clone stock, to avoid clobbering
     var stock = [];
@@ -46,64 +52,66 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock){
 
     // Shadow capacity_used, to avoid clobbering
     var capacity_used = _capacity_used;
+    var stock_i_min = _stock_i_min;
+    var stock_i_max = _stock_i_max;
+    var f_has_holes = _f_has_holes;
+
 
     // enter new arguments into instance
-    var is_arguments_partial = false;
+    var is_delayed_execution = false;
 
     var argument;
-    var stock_i = 0;
+    var stock_i = stock_i_min;
     var incby = 1;
     var endloop = arguments_count;
-    var offset = 0;
-    i = 0;
+    var limit = stock_i_max + 1;
     process_new_arguments:
-    for (; i !== endloop; i += incby) {
-      //if (stock_i >= (capacity || i < 0) break;
-      // TODO needed? if (capacity === capacity_used) break;
-      //log('\nend condition: %d !== %d | stock_i: %d', i, endloop, stock_i);
+    for(i = 0; i !== endloop; i += incby) {
+      // log('\nend condition: %d !== %d | stock_i: %d', i, endloop, stock_i);
       argument = arguments[i];
 
       if (argument === _) {
-        is_arguments_partial = true;
-        offset++;
-        //log('Hit Hole _, offset @ %d', offset);
+        f_has_holes = true;
+        is_delayed_execution = true;
+        stock_i += incby
+        // log('Hit Hole _, offset @ %d');
         continue;
       }
 
       if (argument === ___) {
-        is_arguments_partial = true;
-        incby = -1
-        stock_i = capacity - 1;
-        //log('Hit shoulder ___ of size (%d)', (arguments_count - (i + 1)));
+        is_delayed_execution = true;
+        incby = -1;
+        stock_i = stock_i_max;
+        limit = stock_i_min - 1;
+        // log('Hit shoulder ___ of size (%d)', (arguments_count - (i + 1)));
         endloop = i;
         i = arguments_count;
         continue;
       }
 
-      while (true) {
-        if (stock_i >= capacity) break process_new_arguments;
-        if (stock[stock_i] !== _) {
+      if (f_has_holes) {
+        while (stock[stock_i] !== _) {
+          if (stock_i === limit) break process_new_arguments;
           stock_i += incby;
-        } else if(offset) {
-          stock_i += incby;
-          offset--;
-        } else {
-          break;
         }
       }
-      //log('Add argument: %j @ i%d', argument, stock_i);
+
+      // log('Add argument: %j @ i%d', argument, stock_i);
       stock[stock_i] = argument;
-      //log('stock: %j', stock);
+      // log('stock: %j', stock);
+      if (stock_i_min === stock_i) stock_i_min++;
+      if (stock_i_max === stock_i) stock_i_max--;
       capacity_used++;
+      stock_i += incby;
     }
 
 
-    //log('\nProcessing Complete. ')
-    if (is_arguments_partial || capacity !== capacity_used) {
-      //log('Not applicable, stock: %j', stock);
-      return accumulate_arguments(f, capacity, capacity_used, stock);
+    // log('\nProcessing Complete. ')
+    if (is_delayed_execution || capacity !== capacity_used) {
+      // log('Not applicable, stock: %j', stock);
+      return accumulate_arguments(f, capacity, capacity_used, stock, stock_i_min, stock_i_max, f_has_holes);
     } else {
-      //log('Applicable! %j', stock);
+      // log('Applicable! %j', stock);
       return f.apply(null, stock);
     }
   };
