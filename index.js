@@ -39,8 +39,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock){
 
     var _stock_count = _stock.length;
     i = 0;
-    for (; i < _stock_count; i++ ) {
-      stock[i] = _stock[i];
+    while(i < _stock_count){
+      stock[i] = _stock[i]; i++;
     }
 
 
