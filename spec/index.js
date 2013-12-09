@@ -88,12 +88,6 @@ var test_partialing = function(r, pf){
       r(pf(_,2,_,4)(1,3,5,6));
     });
 
-    it('offsets are ignored during resolution time', function(){
-      // Note that at one point rha is {2:5, 0:6}, but the hole @ 1 is tossed
-      // by the end.
-      r(pf(___,_,5,_,_)(___,6)(1,2,_,4)(3));
-    });
-
     it('plugs are constants, conflicting indexes from new args are moved opposite the shoulder', function(){
       // Note: 1,4,... instead of: 1,_,_,4,...
       r(pf(_,2,3,___)(1,4,5,6,___)())
@@ -108,12 +102,12 @@ var test_partialing = function(r, pf){
       r(pf(1,_,3,___,4,_,6)(2,___,5)())
     });
 
-    it('drops over-partialed arguments right-to-left', function(){
+    it.skip('drops over-partialed arguments right-to-left', function(){
       r(pf(1,2,3,4,5,6,7,8,9,10,___)())
     });
 
     it('Holes count against the param count during invocation thus predictably leading to drops', function(){
-      // 7 is dropped, params is 4 but 5 args given
+      // 7 is dropped, param count is 4 but 5 args given
       r(pf(_,2,3,_,_,_)(_,4,5,6,7)(1))
     });
 
