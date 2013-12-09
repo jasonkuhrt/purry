@@ -1,28 +1,3 @@
-/*
-plug
-partial:
-shoulder:
-hole:
-value:
-lh  : left-hand
-rh  : right-hand
-oh  : opposite-hand (means right in lha, left in rha)
-ohh : opsite-hand holes
-lhh : left-hand hole
-rhh : right-hand hole
-lha : left-hand args
-rha : right-hand args
-
-Anatomy:
-
-[lha][rha]
-  |    |
-  ------
-  [size]
-    |
-  (...)->
-*/
-
 var ___ = '___send-to-shoulder___';
 var _ = '_hole_';
 //var log = 1 ? console.log : function(){} ;
@@ -123,7 +98,3 @@ var purry = module.exports = function(f){
 
 purry._ = _;
 purry.___ = ___;
-
-
-
-// Helpers
