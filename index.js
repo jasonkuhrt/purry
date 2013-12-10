@@ -40,26 +40,21 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
     // log('\n\nInvoked: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, arguments)
 
-    // Clone stock, to avoid clobbering
+    // Cloning, to avoid clobbering
     var stock = [];
-
     var _stock_count = _stock.length;
     i = 0;
     while(i < _stock_count) {
       stock[i] = _stock[i]; i++;
     }
 
-
-    // Shadow capacity_used, to avoid clobbering
+    // Shadowing, to avoid clobbering
     var capacity_used = _capacity_used;
     var stock_i_min = _stock_i_min;
     var stock_i_max = _stock_i_max;
     var f_has_holes = _f_has_holes;
 
-
-    // enter new arguments into instance
     var is_delayed_execution = false;
-
     var argument;
     var stock_i = stock_i_min;
     var incby = 1;
@@ -109,13 +104,11 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
 
     // log('\nProcessing Complete. ')
-    if (is_delayed_execution || capacity !== capacity_used) {
-      // log('Not applicable, stock: %j', stock);
-      return accumulate_arguments(f, capacity, capacity_used, stock, stock_i_min, stock_i_max, f_has_holes);
-    } else {
-      // log('Applicable! %j', stock);
-      return f.apply(null, stock);
-    }
+    // log('Not applicable, stock: %j', stock);
+    // log('Applicable! %j', stock);
+    return is_delayed_execution || capacity !== capacity_used ?
+      accumulate_arguments(f, capacity, capacity_used, stock, stock_i_min, stock_i_max, f_has_holes) :
+      f.apply(null, stock) ;
   };
 }
 
