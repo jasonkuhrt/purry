@@ -109,8 +109,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       // These markers allow subsequent invocation to start/stop
       // stock_i at optimized points meaning a certain amount of
       // loops are skipped.
-      if (stock_i_min === stock_i) stock_i_min++;
-      if (stock_i_max === stock_i) stock_i_max--;
+      if      (stock_i_min === stock_i) { stock_i_min++; }
+      else if (stock_i_max === stock_i) { stock_i_max--; }
       capacity_used++;
       stock_i += incby;
       // log('stock: %j', stock);
