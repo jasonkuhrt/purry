@@ -45,7 +45,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
     var _stock_count = _stock.length;
     i = 0;
-    while(i < _stock_count){
+    while(i < _stock_count) {
       stock[i] = _stock[i]; i++;
     }
 
@@ -71,8 +71,9 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       argument = arguments[i];
 
       if (argument === _) {
-        f_has_holes = true;
         is_delayed_execution = true;
+        if (i + incby === endloop) break;
+        f_has_holes = true;
         stock_i += incby
         // log('Hit Hole _, offset @ %d');
         continue;
@@ -80,6 +81,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
       if (argument === ___) {
         is_delayed_execution = true;
+        if (i + incby === endloop) break;
         incby = -1;
         stock_i = stock_i_max;
         limit = stock_i_min - 1;
