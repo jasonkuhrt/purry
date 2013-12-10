@@ -115,14 +115,12 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 purry._ = _;
 purry.___ = ___;
 
-purry.install = function(){
-  purry.installSyntax('_', '___');
+purry.install = function(symbol_, symbol___){
+  purry.installSyntax(symbol_, symbol___);
   Function.prototype.purry = purry;
 };
 
 purry.installSyntax = function(symbol_, symbol___){
-  symbol_ = symbol_ || '_';
-  symbol___ = symbol___ || '___';
-  GLOBAL[symbol_] = _;
-  GLOBAL[symbol___] = ___;
+  GLOBAL[symbol_ || '_'] = _;
+  GLOBAL[symbol___ || '___'] = ___;
 };
