@@ -108,7 +108,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       // never fill it again.
       // These markers allow subsequent invocation to start/stop
       // stock_i at optimized points meaning a certain amount of
-      // loops are skipped.
+      // loops are skipped. In fact if allows us to only require a
+      // inner while-loop for holey-functions.
       if      (stock_i_min === stock_i) { stock_i_min++; }
       else if (stock_i_max === stock_i) { stock_i_max--; }
       capacity_used++;
