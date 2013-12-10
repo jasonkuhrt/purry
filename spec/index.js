@@ -1,7 +1,6 @@
 var assert = require('assert');
-var parry = require('../');
-GLOBAL._ = parry._;
-GLOBAL.___ = parry.___;
+var purry = require('../');
+purry.installSyntax();
 
 
 
@@ -136,9 +135,9 @@ var test_mixed_curry_partial = function(is_result, pcf){
 
 
 
-describe('parry', function(){
+describe('purry', function(){
   var calc = function(a, b, c, d, e, f){ return Array.prototype.slice.apply(arguments); }
-  var calc_ = parry(calc);
+  var calc_ = purry(calc);
   var is_result = function(actual){
     assert.deepEqual([1,2,3,4,5,6], actual);
   };

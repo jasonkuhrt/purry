@@ -3,8 +3,7 @@ var curry = require('lodash').curry;
 var partial = require('lodash').partial;
 var partialRight = require('lodash').partialRight;
 var purry = require('../');
-var ___ = purry.___;
-var __ = purry.__;
+purry.install();
 var echo_arguments = function(a, b, c, d, e, f){
   return [a, b, c, d, e, f];
 };
