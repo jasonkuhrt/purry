@@ -21,14 +21,14 @@ var purry = module.exports = function(f){
 // @_stock_i_min –– The minimum index to start stocking at.
 function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max, _f_has_holes){
   var _is_capacity_full = capacity === _capacity_used;
-  return function(){
+  return function intercept_arguments(){
     var arguments_count = arguments.length;
 
     // Bail ASAP if no arguments given
     if (!arguments_count) {
       return _is_capacity_full ?
         f.apply(null, _stock) :
-        accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max, _f_has_holes) ;
+        intercept_arguments ;
 
     }
 
