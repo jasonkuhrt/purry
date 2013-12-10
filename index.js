@@ -21,12 +21,13 @@ var purry = module.exports = function(f){
 // @_stock –– The plugged holes so far
 // @_stock_i_min –– The minimum index to start stocking at.
 function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max, _f_has_holes){
+  var _is_capacity_full = capacity === _capacity_used;
   return function(){
     var arguments_count = arguments.length;
 
     // Bail ASAP if no arguments given
     if (!arguments_count) {
-      return capacity === _capacity_used ?
+      return _is_capacity_full ?
         f.apply(null, _stock) :
         accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max, _f_has_holes) ;
 
@@ -67,6 +68,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
       if (argument === _) {
         is_delayed_execution = true;
+        // If _ is last argument it has no affect
+        // other than delaying execution.
         if (i + incby === endloop) break;
         f_has_holes = true;
         stock_i += incby
@@ -88,18 +91,29 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
       if (f_has_holes) {
         while (stock[stock_i] !== _) {
+          // If an argument falls out of bounds, discard it.
+          // Also discard everything after, because all subsequent
+          // arguments will be out of bounds too.
           if (stock_i === limit) break process_new_arguments;
           stock_i += incby;
         }
       }
 
+      // With an argument and and its resolved index in hand,
+      // stock it!
       // log('Add argument: %j @ i%d', argument, stock_i);
       stock[stock_i] = argument;
-      // log('stock: %j', stock);
+      // Take note of new argument minimum/maximums.
+      // For example if the min is at 0 and we fill 0 we know we can
+      // never fill it again.
+      // These markers allow subsequent invocation to start/stop
+      // stock_i at optimized points meaning a certain amount of
+      // loops are skipped.
       if (stock_i_min === stock_i) stock_i_min++;
       if (stock_i_max === stock_i) stock_i_max--;
       capacity_used++;
       stock_i += incby;
+      // log('stock: %j', stock);
     }
 
 
