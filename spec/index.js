@@ -7,20 +7,22 @@ purry.installSyntax();
 var test_currying = function(is_result, cf){
   describe('currying', function(){
 
-    it('may accept all arguments at once', function(){
+    // Implied rules:
+    // - executes immediately after all parameters have been argued
+
+    it('may accept arguments all at once (like "normal")', function(){
       is_result(cf(1,2,3,4,5,6));
     });
 
-    it('may accept all arguments incrementally', function(){
+    it('may accept arguments one at a time', function(){
       is_result(cf(1)(2)(3)(4)(5)(6));
     });
 
-    it('may accept some arguments incrementally', function(){
-      is_result(cf(1,2,3)(4,5,6));
-      is_result(cf(1)(2,3,4,5)(6))
+    it('may accept arguments multiple at a time', function(){
+      is_result(cf(1)(2,3)(4,5,6));
     });
 
-    it('returns as-is if invoked without arguments', function(){
+    it('may accept no arguments, which causes function to return as-is', function(){
       is_result(cf()()()()(1)(2)(3)(4)(5)()()()(6))
     });
 
