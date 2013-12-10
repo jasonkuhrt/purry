@@ -1,0 +1,33 @@
+Curring:
+curried x 66,133 ops/sec ±6.70% (6 runs sampled)
+purried x 618,473 ops/sec ±8.01% (6 runs sampled)
+Fastest is purried
+
+
+Calling:
+all args at once: function x 34,987,155 ops/sec ±14.71% (6 runs sampled)
+all args at once: curry x 4,803,928 ops/sec ±5.99% (6 runs sampled)
+all args at once: purry x 3,524,181 ops/sec ±3.52% (6 runs sampled)
+Fastest is all args at once: function
+
+
+Execution:
+partial(echo_arguments) x 3,640,541 ops/sec ±4.73% (6 runs sampled)
+purried(x,___)(...) x 11,876,241 ops/sec ±6.05% (6 runs sampled)
+partialRight(echo_arguments) mixed with partial x 2,490,166 ops/sec ±6.56% (6 runs sampled)
+purried left-and-right x 5,123,953 ops/sec ±1.08% (5 runs sampled)
+Fastest is purried(x,___)(...)
+
+
+Partial Application:
+partial(echo_arguments) x 48,520 ops/sec ±4.53% (6 runs sampled)
+purried(x,___)(...) x 511,692 ops/sec ±5.04% (6 runs sampled)
+partialRight(echo_arguments) x 49,617 ops/sec ±8.50% (6 runs sampled)
+purried(___,x)(...) x 566,145 ops/sec ±2.09% (6 runs sampled)
+partial(echo_arguments) (some) x 182,706 ops/sec ±10.77% (6 runs sampled)
+purried(x,...,___)(...) x 1,729,610 ops/sec ±3.01% (6 runs sampled)
+partialRight(echo_arguments) mixed with partial x 101,698 ops/sec ±10.19% (6 runs sampled)
+purried left-and-right x 1,148,591 ops/sec ±2.28% (6 runs sampled)
+Fastest is purried(x,...,___)(...)
+
+
