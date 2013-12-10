@@ -1,6 +1,5 @@
 var ___ = '___send-to-shoulder___';
 var _ = '_hole_';
-var log = 1 ? console.log : function(){} ;
 
 
 var purry = module.exports = function(f){
@@ -33,23 +32,30 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
     }
 
-    // TODO? Bail ASAP if all arguments given in single shot
-    // if (!_capacity_used && arguments_count === capacity)
-
     // index for various loops below
     var i;
 
-    // log('\n\nInvoked: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, arguments)
+    // console.log('\n\nInvoked: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, arguments)
 
-    // Cloning, to avoid clobbering
+    // Stock cloning, to avoid clobbering
+    // We can use argument min/max to avoid
+    // array-access (better performance). If we are
+    // above/below min/max we know we're dealing
+    // with unfilled params. This optimization cannot
+    // be used with holey functions.
     var stock = [];
     var _stock_count = _stock.length;
     i = 0;
     while(i < _stock_count) {
-      stock[i] = _stock[i]; i++;
+      if (_f_has_holes || i < _stock_i_min || i > _stock_i_max) {
+        stock.push(_stock[i]);
+      } else {
+        stock.push(_);
+      }
+      i++;
     }
 
-    // Shadowing, to avoid clobbering
+    // State shadowing, to avoid clobbering
     var capacity_used = _capacity_used;
     var stock_i_min = _stock_i_min;
     var stock_i_max = _stock_i_max;
@@ -63,7 +69,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     var limit = stock_i_max + 1;
     process_new_arguments:
     for(i = 0; i !== endloop; i += incby) {
-      // log('\nend condition: %d !== %d | stock_i: %d', i, endloop, stock_i);
+      // console.log('\nend condition: %d !== %d | stock_i: %d', i, endloop, stock_i);
       argument = arguments[i];
 
       if (argument === _) {
@@ -73,7 +79,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         if (i + incby === endloop) break;
         f_has_holes = true;
         stock_i += incby
-        // log('Hit Hole _, offset @ %d');
+        // console.log('Hit Hole _, offset @ %d');
         continue;
       }
 
@@ -83,7 +89,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         incby = -1;
         stock_i = stock_i_max;
         limit = stock_i_min - 1;
-        // log('Hit shoulder ___ of size (%d)', (arguments_count - (i + 1)));
+        // console.log('Hit shoulder ___ of size (%d)', (arguments_count - (i + 1)));
         endloop = i;
         i = arguments_count;
         continue;
@@ -101,7 +107,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
       // With an argument and and its resolved index in hand,
       // stock it!
-      // log('Add argument: %j @ i%d', argument, stock_i);
+      // console.log('Add argument: %j @ i%d', argument, stock_i);
       stock[stock_i] = argument;
       // Take note of new argument minimum/maximums.
       // For example if the min is at 0 and we fill 0 we know we can
@@ -114,13 +120,13 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       else if (stock_i_max === stock_i) { stock_i_max--; }
       capacity_used++;
       stock_i += incby;
-      // log('stock: %j', stock);
+      // console.log('stock: %j', stock);
     }
 
 
-    // log('\nProcessing Complete. ')
-    // log('Not applicable, stock: %j', stock);
-    // log('Applicable! %j', stock);
+    // console.log('\nProcessing Complete. ')
+    // console.log('Not applicable, stock: %j', stock);
+    // console.log('Applicable! %j', stock);
     return is_delayed_execution || capacity !== capacity_used ?
       accumulate_arguments(f, capacity, capacity_used, stock, stock_i_min, stock_i_max, f_has_holes) :
       f.apply(null, stock) ;
