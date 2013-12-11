@@ -15,8 +15,6 @@ var flip2 = function(f){
 var add64 = function(x){
   return x + 64;
 };
-var from_char_code = String.fromCharCode;
-var to_argument_names = lo.partialRight(lo.map, lo.compose(from_char_code, add64));
 var chunk_grow1 = function(array){
   if (array.length === 0) return [];
   if (array.length === 1) return [array];
@@ -32,6 +30,9 @@ var chunk_grow1 = function(array){
   };
   return chunks;
 }
+var from_char_code = String.fromCharCode;
+var to_argument_names = lo.partialRight(lo.map, lo.compose(from_char_code, add64));
+
 
 
 
@@ -40,12 +41,10 @@ var chunk_grow1 = function(array){
 
 module.exports = function(curry){
   var values = [1,2,3,4,5,6];
+  var is_result = lo.partial(assert.deepEqual, values)
   var echo = new Function(to_argument_names(values).join(','), 'return Array.prototype.slice.apply(arguments);');
   var f = curry(echo);
 
-  var is_result = function(actual){
-    assert.deepEqual(values, actual);
-  };
 
   describe('currying', function(){
 
