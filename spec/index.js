@@ -162,7 +162,8 @@ describe('purry', function(){
     assert.deepEqual([1,2,3,4,5,6], actual);
   };
 
-  require('./currying')(purry);
-  test_partialing(is_result, echo_);
-  test_mixed_curry_partial(is_result, echo_);
+  // require('./currying')(purry);
+  // test_partialing(is_result, echo_);
+  test_partialing(is_result, purry(function(){ return Array.prototype.slice.apply(arguments); }));
+  // test_mixed_curry_partial(is_result, echo_);
 });

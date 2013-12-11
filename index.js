@@ -3,15 +3,147 @@ var _ = '_hole_';
 
 
 var purry = module.exports = function(f){
-  if (f.length === 0) throw new Error('purry is not compatible with variable-argument functions.')
-  var initial_stock = [];
-  var i = f.length;
-  while(i > 0){
-    initial_stock.push(_);
-    i--;
+  if (f.length) {
+    var initial_stock = [];
+    var i = f.length;
+    while(i > 0){
+      initial_stock.push(_);
+      i--;
+    }
+    return accumulate_arguments(f, f.length, 0, initial_stock, 0, f.length - 1, false);
+  } else {
+    return accumulate_arguments2(f, [], [], 0, 0, false);
   }
-  return accumulate_arguments(f, f.length, 0, initial_stock, 0, f.length - 1, false);
 };
+
+
+function clone_array(array){
+  var clone = [];
+  var count = array.length;
+  i = 0;
+  while(i < count) {
+    clone.push(array[i]);
+    i++;
+  }
+  return clone;
+}
+// @f –– The wrapped function
+// @capacity –– The param count of f
+// @_capacity_used –– The remaining holes of _stock
+// @_stock –– The plugged holes so far
+// @_stock_i_min –– The minimum index to start stocking at.
+function accumulate_arguments2(f, _stock_left, _stock_right, _stock_i_min, _stock_i_max, _f_has_holes){
+  return function(){
+    var arguments_count = arguments.length;
+
+    // Bail if no arguments given
+    if (!arguments_count) {
+      // console.log('Invoked without arguments, early exit');
+      return f.apply(null, _stock_left) ;
+    }
+
+    // index for various loops below
+    var i;
+
+    // console.log('\n\nInvoked: | stock_left %j | stock_right %j | new args %j', _stock_left, _stock_right, arguments)
+
+    // Stock cloning, to avoid clobbering
+    var stock_left = clone_array(_stock_left);
+    var stock_right = clone_array(_stock_right);
+
+    // State shadowing, to avoid clobbering
+    var stock_i_min = _stock_i_min;
+    var stock_i_max = _stock_i_max;
+    var f_has_holes = _f_has_holes;
+
+    var is_delayed_execution = false;
+    var stock = stock_left;
+    var argument;
+    var stock_i = stock_i_min;
+    var incby = 1;
+    var endloop = arguments_count;
+    // var limit = stock_i_max + 1;
+    var limit = stock.length;
+    process_new_arguments:
+    for(i = 0; i !== endloop; i += incby) {
+      // console.log('\nend condition: %d !== %d | stock_i: %d', i, endloop, stock_i);
+      argument = arguments[i];
+
+      if (argument === _) {
+        is_delayed_execution = true;
+        // If _ is last argument it has no affect
+        // other than delaying execution.
+        if (i + incby === endloop) break;
+        f_has_holes = true;
+        //stock_i += incby
+        // console.log('Hit Hole _');
+        //continue;
+      }
+
+      if (argument === ___) {
+        is_delayed_execution = true;
+        if (i + incby === endloop) break;
+        stock = stock_right;
+        incby = -1;
+        stock_i = stock_i_max;
+        // limit = stock_i_min - 1;
+        limit = -1;
+        // console.log('Hit shoulder ___ of size (%d)', (arguments_count - (i + 1)));
+        endloop = i;
+        i = arguments_count;
+        continue;
+      }
+
+      // console.log('f_has_holes %j', f_has_holes);
+      if (f_has_holes) {
+        while (stock[stock_i] !== _) {
+          // console.log('limit %j === stock_i %j %j?', limit, stock_i, limit === stock_i);
+          // If an argument falls out of bounds, increase shoulder size.
+          if (stock_i === limit) {
+            limit += incby;
+            break;
+          }
+          stock_i += incby;
+        }
+        // console.log('Add argument: %j @ i%d', argument, stock_i);
+        stock[stock_i] = argument;
+        // if      (stock_i_min === stock_i) { stock_i_min++; }
+        // else if (stock_i_max === stock_i) { stock_i_max--; }
+        stock_i += incby;
+      } else {
+        // console.log('Add argument: %j @ i%d', argument, stock_i);
+        stock.push(argument);
+        // if      (stock_i_min === stock_i) { stock_i_min++; }
+        // else if (stock_i_max === stock_i) { stock_i_max--; }
+        stock_i += incby;
+      }
+
+      // With an argument and and its resolved index in hand,
+      // stock it!
+
+      // Take note of new argument minimum/maximums.
+      // For example if the min is at 0 and we fill 0 we know we can
+      // never fill it again.
+      // These markers allow subsequent invocation to start/stop
+      // stock_i at optimized points meaning a certain amount of
+      // loops are skipped. In fact if allows us to only require a
+      // inner while-loop for holey-functions.
+
+
+
+      // console.log('stock: %j', stock);
+    }
+
+
+    // console.log('\nProcessing Complete. Delayed execution? %j', is_delayed_execution)
+    // console.log('Not applicable, stock: %j', stock);
+    // console.log('Applicable! %j', stock);
+    return is_delayed_execution ?
+      accumulate_arguments2(f, stock_left, stock_right, stock_i_min, stock_i_max, f_has_holes) :
+      f.apply(null, stock) ;
+  };
+}
+
 
 
 // @f –– The wrapped function
@@ -24,12 +156,9 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
   return function intercept_arguments(){
     var arguments_count = arguments.length;
 
-    // Bail ASAP if no arguments given
+    // Bail if no arguments given
     if (!arguments_count) {
-      return _is_capacity_full ?
-        f.apply(null, _stock) :
-        intercept_arguments ;
-
+      return _is_capacity_full ? f.apply(null, _stock) : intercept_arguments ;
     }
 
     // index for various loops below
