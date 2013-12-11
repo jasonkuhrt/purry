@@ -4,39 +4,17 @@ purry.installSyntax();
 
 
 
-var test_currying = function(is_result, cf){
-  describe('currying', function(){
-
-    // Implied rules:
-    // - executes immediately after all parameters have been argued
-
-    it('may accept arguments all at once (like "normal")', function(){
-      is_result(cf(1,2,3,4,5,6));
-    });
-
-    it('may accept arguments one at a time', function(){
-      is_result(cf(1)(2)(3)(4)(5)(6));
-    });
-
-    it('may accept arguments multiple at a time', function(){
-      is_result(cf(1)(2,3)(4,5,6));
-    });
-
-    it('may accept no arguments, which causes function to return as-is', function(){
-      is_result(cf()()()()(1)(2)(3)(4)(5)()()()(6))
-    });
-
-  });
-};
-
 
 
 var test_partialing = function(r, pf){
-  describe('partial application', function(){
+  describe('partial applying', function(){
 
-    it('may repeatedly shoulder each argument', function(){
+    it('may repeatedly shoulder each argument left', function(){
       r(pf(1,___)(2,___)(3,___)(4,___)(5,___)(6,___)());
-      r(pf(___,6)(___,5)(___,4)(___,3)(___,2)(___,1)(), 'right');
+    });
+
+    it('may repeatedly shoulder each argument right', function(){
+      r(pf(___,6)(___,5)(___,4)(___,3)(___,2)(___,1)());
     });
 
     it('may shoulder some arguments', function(){
@@ -138,13 +116,13 @@ var test_mixed_curry_partial = function(is_result, pcf){
 
 
 describe('purry', function(){
-  var calc = function(a, b, c, d, e, f){ return Array.prototype.slice.apply(arguments); }
-  var calc_ = purry(calc);
-  var is_result = function(actual){
+  var echo = function(a, b, c, d, e, f){ return Array.prototype.slice.apply(arguments); }
+  var echo_ = purry(echo);
+  var is_result = function(actual) {
     assert.deepEqual([1,2,3,4,5,6], actual);
   };
 
-  test_currying(is_result, calc_);
-  test_partialing(is_result, calc_);
-  test_mixed_curry_partial(is_result, calc_);
+  require('./currying')(purry);
+  test_partialing(is_result, echo_);
+  test_mixed_curry_partial(is_result, echo_);
 });

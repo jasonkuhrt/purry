@@ -4,7 +4,9 @@
   "description": "Symbiotic, high-performance currying and partial application",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha ./spec --reporter spec",
+    "test": "./node_modules/.bin/mocha ./spec/index.js --reporter spec",
+    "dev": "./node_modules/.bin/mocha ./spec/index.js --reporter min --watch",
+    "dev-spec": "./node_modules/.bin/mocha ./spec/index.js --reporter spec --watch",
     "bench-slow": "node ./bench/index.js | tee bench/bench-results-$(date +%s).txt",
     "bench-fast": "node ./bench/index.js 0.1 | tee bench/bench-results-$(date +%s).txt",
     "bench-sketch": "node ./bench/index.js 0.1"
