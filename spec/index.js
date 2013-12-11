@@ -7,7 +7,6 @@ purry.installSyntax();
 
 
 var test_partialing = function(r, f){
-  describe('partially applying', function(){
 
     describe('left', function(){
       it('delays execution', function(){
@@ -134,7 +133,6 @@ var test_partialing = function(r, f){
     it('throws an error if more than one shoulder is used per partial');
     it('throws an error if used on variable-arguments function');
 
-  });
 };
 
 
@@ -162,8 +160,18 @@ describe('purry', function(){
     assert.deepEqual([1,2,3,4,5,6], actual);
   };
 
-  // require('./currying')(purry);
-  // test_partialing(is_result, echo_);
-  test_partialing(is_result, purry(function(){ return Array.prototype.slice.apply(arguments); }));
-  // test_mixed_curry_partial(is_result, echo_);
+  require('./currying')(purry);
+
+  describe('Partially Applying a six-parameter function', function(){
+    test_partialing(is_result, echo_);
+  });
+
+  describe('Partially Applying a variable-parameter function', function(){
+    test_partialing(is_result, purry(function(){
+      return Array.prototype.slice.apply(arguments);
+    }));
+  });
+
+  test_mixed_curry_partial(is_result, echo_);
+
 });
