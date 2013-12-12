@@ -46,7 +46,9 @@ function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _st
     var stock_i_min = _stock_i_min;
     var stock_i_max = _stock_i_max;
 
-    var is_stock_left_holey = false;
+    // If the first argument is a pin it means there is no left shoulder
+    // and it means whatever left-shoulder state we had, still is.
+    var is_stock_left_holey = arguments[0] === ___ ? _is_stock_left_holey : false ;
     var is_stock_right_holey = false;
 
     var is_delayed_execution = false;

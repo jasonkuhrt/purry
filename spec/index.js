@@ -167,9 +167,22 @@ describe('purry', function(){
   });
 
   describe('Partially Applying a variable-parameter function', function(){
-    test_partialing(is_result, purry(function(){
+    var f = purry(function(){
       return Array.prototype.slice.apply(arguments);
-    }));
+    });
+    test_partialing(is_result, f);
+    describe('implementation details', function(){
+      describe('hole-tracking-optimizations do not cause subtle bugs', function(){
+        // Holey functions slow performance.
+        // Hole-tracking finda the optimal path.
+        it('Left-shoulder holes are stored even when following invocation does not interact with left-shoulder', function(){
+          is_result(f(_,2,3)(___,6)(1,4,5));
+        });
+        it('Right-shoulder holes are stored even when following invocation does not interact with right-shoulder', function(){
+          is_result(f(___,4,5,_)(1,2,___)(___,6)(3));
+        });
+      });
+    })
   });
 
   test_mixed_curry_partial(is_result, echo_);
