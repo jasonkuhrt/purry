@@ -1,6 +1,5 @@
 var assert = require('assert');
 var purry = require('../');
-purry.installSyntax();
 
 
 
