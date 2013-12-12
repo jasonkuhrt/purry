@@ -42,15 +42,15 @@ var test_partialing = function(r, f){
         r(f(___,1,2,3,4,5,6)());
       });
 
-      it('Each application sends arguments to the right shoulder, in order of application (later is farther right)', function(){
+      it('each application sends arguments to the right shoulder, in order of application (later is farther right)', function(){
         r(f(___,6)(___,5)(___,4)(___,3)(___,2)(___,1)());
       });
 
-      it('May argue only some final parameters', function(){
+      it('may argue only some final parameters', function(){
         r(f(___,4,5,6)(1,2,3));
       });
 
-      it('May repeatedly argue some final parameters', function(){
+      it('may repeatedly argue some final parameters', function(){
         r(f(___,4,5,6)(___,2,3)(1));
       });
 
@@ -58,7 +58,7 @@ var test_partialing = function(r, f){
         r(f(___,5,_)(___,6)(1,2,3,4));
       });
 
-      it('Available parameters are argued in order during each invocation instance, and reconstructed in sum in order at execution time', function(){
+      it('available parameters are argued in order during each invocation instance, and reconstructed in sum in order at execution time', function(){
         // Notice how the second invocation treats the function as if it were 4 params
         // but the final execution knows how to put 6 at the end and 1,2,3 at the start
         r(f(___,4,5,_)(___,1,2,3,6)());
@@ -98,10 +98,7 @@ var test_partialing = function(r, f){
         r(f(_,2,3)(_,4,5)(1,6));
       });
 
-      it('Holes count against the param count during invocation thus predictably dropping over-supplied arguments', function(){
-        // 7 is dropped, param count is 4 but 5 args given
-        r(f(_,2,3,_,_,_)(_,4,5,6,7)(1))
-      });
+
     });
 
 
@@ -164,6 +161,10 @@ describe('purry', function(){
 
   describe('Partially Applying a six-parameter function', function(){
     test_partialing(is_result, echo_);
+    it('Holes count against the param count during invocation thus predictably dropping over-supplied arguments', function(){
+      // 7 is dropped, param count is 4 but 5 args given
+      is_result(echo_(_,2,3,_,_,_)(_,4,5,6,7)(1))
+    });
   });
 
   describe('Partially Applying a variable-parameter function', function(){
