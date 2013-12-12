@@ -5,13 +5,13 @@
 
 ## Installation
 
-  Install with [component(1)](http://component.io):
+  With [component(1)](http://component.io):
 
-    $ component install jasonkuhrt/purry
+    component install jasonkuhrt/purry
 
-  Install with [npm(1)](http://npmjs.org):
+  With [npm(1)](http://npmjs.org):
 
-    $ npm install purry
+    npm install purry
 
 ## API
 
