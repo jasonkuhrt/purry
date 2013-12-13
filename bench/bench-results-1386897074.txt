@@ -1,0 +1,70 @@
+Curring:
+curry x 66,248 ops/sec ±10.55% (6 runs sampled)
+purry x 870,987 ops/sec ±10.09% (6 runs sampled)
+
+Fastest is purry
+
+
+Execution with all arguments at once:
+native x 31,161,766 ops/sec ±5.66% (6 runs sampled)
+curry x 4,876,840 ops/sec ±6.50% (6 runs sampled)
+purry x 2,945,023 ops/sec ±1.15% (6 runs sampled)
+curry_vargs x 4,737,841 ops/sec ±1.61% (6 runs sampled)
+purry_vargs x 3,124,448 ops/sec ±3.38% (6 runs sampled)
+
+Fastest is native
+
+
+Execution:
+L/R partial_args x 2,644,076 ops/sec ±10.34% (5 runs sampled)
+L/R purry_args x 4,957,915 ops/sec ±4.23% (5 runs sampled)
+L/R partial_vargs x 2,539,113 ops/sec ±7.94% (6 runs sampled)
+L/R purry_vargs x 3,083,971 ops/sec ±0.81% (6 runs sampled)
+L partial_args x 2,881,167 ops/sec ±4.80% (6 runs sampled)
+L purry_args x 4,949,722 ops/sec ±2.75% (6 runs sampled)
+L partial_vargs x 2,872,201 ops/sec ±5.87% (6 runs sampled)
+L purry_vargs x 4,199,085 ops/sec ±2.65% (6 runs sampled)
+
+Fastest is L purry_args,L/R purry_args
+
+
+Holey Partial Application:
+L/R partial_args x 127,758 ops/sec ±6.63% (6 runs sampled)
+L/R purry_args x 1,598,405 ops/sec ±6.17% (6 runs sampled)
+L/R partial_vargs x 122,626 ops/sec ±7.93% (6 runs sampled)
+L/R purry_vargs x 1,259,306 ops/sec ±5.73% (6 runs sampled)
+1@1 purry_args x 1,319,314 ops/sec ±5.09% (6 runs sampled)
+1@1 purry_vargs x 902,303 ops/sec ±4.59% (5 runs sampled)
+1@2 purry_args x 1,363,020 ops/sec ±5.53% (6 runs sampled)
+1@2 purry_vargs x 1,023,760 ops/sec ±2.50% (6 runs sampled)
+1@2,3 2@4,6 purry_args x 1,093,156 ops/sec ±9.18% (6 runs sampled)
+1@2,3 2@4,6 purry_vargs x 761,763 ops/sec ±0.63% (6 runs sampled)
+All L holes purry_args x 592,855 ops/sec ±3.59% (6 runs sampled)
+All L holes purry_vargs x 452,172 ops/sec ±0.57% (6 runs sampled)
+All R holes purry_args x 590,660 ops/sec ±10.87% (6 runs sampled)
+All R holes purry_vargs x 365,347 ops/sec ±4.43% (5 runs sampled)
+
+Fastest is L/R purry_args
+
+
+Partial Application:
+L partial_args x 50,852 ops/sec ±4.41% (6 runs sampled)
+L purry_args x 780,917 ops/sec ±6.95% (6 runs sampled)
+L partial_vargs x 52,710 ops/sec ±13.07% (6 runs sampled)
+L purry_vargs x 745,314 ops/sec ±6.42% (6 runs sampled)
+R partial_args x 51,231 ops/sec ±4.50% (5 runs sampled)
+R purry_args x 685,283 ops/sec ±6.21% (6 runs sampled)
+R partial_vargs x 53,154 ops/sec ±4.52% (6 runs sampled)
+R purry_vargs x 594,907 ops/sec ±7.71% (6 runs sampled)
+some-R partial_args x 207,265 ops/sec ±9.16% (6 runs sampled)
+some-R purry_args x 2,268,794 ops/sec ±1.58% (6 runs sampled)
+some-R partial_vargs x 225,231 ops/sec ±5.99% (6 runs sampled)
+some-R purry_vargs x 2,116,651 ops/sec ±2.37% (6 runs sampled)
+L/R partial_args x 124,143 ops/sec ±10.10% (6 runs sampled)
+L/R purry_args x 1,849,014 ops/sec ±2.11% (6 runs sampled)
+L/R partial_vargs x 101,929 ops/sec ±9.88% (6 runs sampled)
+L/R purry_vargs x 1,267,434 ops/sec ±2.36% (6 runs sampled)
+
+Fastest is some-R purry_args
+
+

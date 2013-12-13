@@ -194,17 +194,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     // above/below min/max we know we're dealing
     // with unfilled params. This optimization cannot
     // be used with holey functions.
-    var stock = [];
-    var _stock_count = _stock.length;
-    i = 0;
-    while(i < _stock_count) {
-      if (_is_holey || i < _stock_i_min || i > _stock_i_max) {
-        stock.push(_stock[i]);
-      } else {
-        stock.push(_);
-      }
-      i++;
-    }
+    var stock = _is_holey ? clone_array(_stock) : clone_stock(_stock, _stock_i_min, _stock_i_max, _) ;
+
 
     // State shadowing, to avoid clobbering
     var capacity_used = _capacity_used;
@@ -337,6 +328,18 @@ function clone_array(array){
   i = 0;
   while(i < count) {
     clone.push(array[i]);
+    i++;
+  }
+  return clone;
+}
+
+
+function clone_stock(array, less_than, greater_than, else_value){
+  var clone = [];
+  var count = array.length;
+  var i = 0;
+  while(i < count) {
+    clone.push(i < less_than || i > greater_than ? array[i] : else_value);
     i++;
   }
   return clone;
