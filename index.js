@@ -239,11 +239,11 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         incby = -1;
         stock_i = r_stock_i_min;
         stock_i_limit = l_stock_i_min - 1;
-        // console.log('shoulder size: (%d)', (arguments_count - (i + 1)));
         endloop = i;
-        i = arguments_count;
+        buffered_hole_count = 0;
+        i = arguments_count - 1;
         // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  | stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
-        continue;
+        break;
       }
 
       incby === 1 ? (hole_count += buffered_hole_count) : (r_hole_count += buffered_hole_count) ;
@@ -295,10 +295,82 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       // loops are skipped. In fact if allows us to only require a
       // inner while-loop for holey-functions.
       incby === 1 && stock_i > l_stock_i_max_next && (l_stock_i_max_next = stock_i);
-      // // console.log(incby, stock_i, r_stock_i_max_next)
       incby === -1 && stock_i < r_stock_i_max_next && (r_stock_i_max_next = stock_i);
       capacity_used++;
       // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+    }
+
+    if (i !== endloop) {
+      // console.log('\nPROCESS R ARGUMENTS');
+      // Don't need to handle:
+      // - delayed execution tracking
+      //   since being in this loop implies being delayed
+      // - right-shoulder
+      //   since only 1 is allowed (TODO) per instnace
+      process_r_arguments:
+      for (; i > endloop; i--) {
+        argument = arguments[i];
+        // console.log('\nLOOP %d/%d: %s', i - 1, endloop, format_argument(argument));
+        // console.log(' INIT capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+        if (argument === _) {
+          if (i - 1 === endloop) {
+            break;
+          } else if (stock_i === r_stock_i_max_next) {
+            // console.log('  Match instance hole to never-seen stock param');
+            buffered_hole_count++;
+            stock_i--;
+          } else {
+            // console.log('  Match instance hole to already-seen stock hole');
+            hole_count_instance--;
+            if (!hole_count_instance) stock_i = r_stock_i_max_next ;
+          }
+          // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
+          continue;
+        }
+
+        r_hole_count += buffered_hole_count;
+        buffered_hole_count = 0;
+        // console.log('  BUF capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+
+        // TODO break, really? Or continue? If we break but have an unread _ or ___ then we miss noting that this is a delayed invocation?...
+        if (stock_i === stock_i_limit) break;
+
+        if (hole_count_instance) {
+          while (stock[stock_i] !== _) {
+            // If an argument falls out of bounds, discard it.
+            // Also discard everything after, because all subsequent
+            // arguments will be out of bounds too.
+            if (stock_i === stock_i_limit) {
+              // console.log('  EXT stock_i (%d) reached stock_i_limit (%d)', stock_i, stock_i_limit);
+              break process_r_arguments;
+            }
+            stock_i--;
+          }
+          // console.log('  Match instance arg (%d) to already-seen hole (%d)', argument, stock_i);
+          r_hole_count--;
+          hole_count_instance--;
+          stock[stock_i] = argument;
+          if (!r_hole_count) {
+            // console.log('  All stock holes are argued!');
+            stock_i = r_stock_i_min = r_stock_i_max_next ;
+          } else if (!hole_count_instance){
+            // console.log('  All instance holes are argued!');
+            stock_i = r_stock_i_max_next ;
+          } else {
+            // console.log('  instance holes remain...');
+            stock_i--;
+          }
+        } else {
+          stock[stock_i] = argument;
+          if      (l_stock_i_min === stock_i) { l_stock_i_min++; }
+          else if (r_stock_i_min === stock_i) { r_stock_i_min--; }
+          stock_i--;
+        }
+
+        if (stock_i < r_stock_i_max_next) r_stock_i_max_next = stock_i;
+        capacity_used++;
+        // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+      }
     }
 
     // console.log('\nEND\n      capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock);
