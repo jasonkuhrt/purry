@@ -56,7 +56,7 @@ function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _st
     var stock_i_limit = stock.length;
     var hole_count = is_stock_left_holey;
     var _hole_count = _is_stock_left_holey;
-    process_new_arguments:
+    process_l_arguments:
     for(i = 0; i !== endloop; i += incby) {
       // console.log('\nITERATION START\nEnd when: %d !== %d | stock_i: %d', i, endloop, stock_i);
       argument = arguments[i];
@@ -195,38 +195,37 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     var l_stock_i_max_next = _stock_i_max_next;
     var r_stock_i_min = _r_stock_i_min;
     var r_stock_i_max_next = _r_stock_i_max_next;
-    // Can we use the get-out-of-hole-later optimization
-    // found in accumulate_variable_arguments?
+
     var hole_count = _hole_count;
     var r_hole_count = _r_hole_count;
     var buffered_hole_count = 0;
     var hole_count_instance = hole_count;
 
+    var i = 0;
     var is_delayed_execution = false;
     var argument;
     var stock_i = l_stock_i_min;
-    var incby = 1;
     var endloop = arguments_count;
     var stock_i_limit = r_stock_i_min + 1;
-    process_new_arguments:
-    for(i = 0; i !== endloop; i += incby) {
+    process_l_arguments:
+    for(; i < endloop; i++) {
       argument = arguments[i];
-      // console.log('\nLOOP %d/%d: %s', i+incby, endloop, format_argument(argument));
+      // console.log('\nLOOP %d/%d: %s', i+1, endloop, format_argument(argument));
       // console.log(' INIT capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
 
       if (argument === _) {
         is_delayed_execution = true;
         // If _ is last argument it has no affect
         // other than delaying execution.
-        if (i + incby === endloop) break;
-        if ((incby === 1 && stock_i === l_stock_i_max_next) || (incby === -1 && stock_i === r_stock_i_max_next)) {
+        if (i + 1 === endloop) break;
+        if (stock_i === l_stock_i_max_next) {
           // console.log('  Match instance hole to never-seen stock param');
           buffered_hole_count++;
-          stock_i += incby
+          stock_i++;
         } else {
           // console.log('  Match instance hole to already-seen stock hole');
           hole_count_instance--;
-          if (!hole_count_instance) stock_i = incby === 1 ? l_stock_i_max_next : r_stock_i_max_next ;
+          if (!hole_count_instance) stock_i = l_stock_i_max_next;
         }
         // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
         continue;
@@ -234,9 +233,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
 
       if (argument === ___) {
         is_delayed_execution = true;
-        if (i + incby === endloop) break;
+        if (i + 1 === endloop) { i++; break; }
         hole_count_instance = r_hole_count;
-        incby = -1;
         stock_i = r_stock_i_min;
         stock_i_limit = l_stock_i_min - 1;
         endloop = i;
@@ -246,7 +244,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         break;
       }
 
-      incby === 1 ? (hole_count += buffered_hole_count) : (r_hole_count += buffered_hole_count) ;
+      hole_count += buffered_hole_count ;
       buffered_hole_count = 0;
       // console.log('  BUF capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
 
@@ -260,31 +258,29 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
           // arguments will be out of bounds too.
           if (stock_i === stock_i_limit) {
             // console.log('  EXT stock_i (%d) reached stock_i_limit (%d)', stock_i, stock_i_limit);
-            break process_new_arguments;
+            break process_l_arguments;
           }
-          stock_i += incby;
+          stock_i++;
         }
         // console.log('  Match instance arg (%d) to already-seen hole (%d)', argument, stock_i);
-        incby === 1 ? hole_count-- : r_hole_count-- ;
+        hole_count--;
         hole_count_instance--;
         stock[stock_i] = argument;
-        if (incby === 1 ? !hole_count : !r_hole_count) {
+        if (!hole_count) {
           // console.log('  All stock holes are argued!');
-          incby === 1 ?
-            (stock_i = l_stock_i_min = l_stock_i_max_next) :
-            (stock_i = r_stock_i_min = r_stock_i_max_next) ;
+          stock_i = l_stock_i_min = l_stock_i_max_next
         } else if (!hole_count_instance){
           // console.log('  All instance holes are argued!');
-          stock_i = incby === 1 ? l_stock_i_max_next : r_stock_i_max_next ;
+          stock_i = l_stock_i_max_next;
         } else {
           // console.log('  instance holes remain...');
-          stock_i += incby;
+          stock_i++;
         }
       } else {
         stock[stock_i] = argument;
         if      (l_stock_i_min === stock_i) { l_stock_i_min++; }
         else if (r_stock_i_min === stock_i) { r_stock_i_min--; }
-        stock_i += incby;
+        stock_i++;
       }
 
       // Take note of new argument minimum/maximums.
@@ -294,8 +290,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       // stock_i at optimized points meaning a certain amount of
       // loops are skipped. In fact if allows us to only require a
       // inner while-loop for holey-functions.
-      incby === 1 && stock_i > l_stock_i_max_next && (l_stock_i_max_next = stock_i);
-      incby === -1 && stock_i < r_stock_i_max_next && (r_stock_i_max_next = stock_i);
+      if (stock_i > l_stock_i_max_next) l_stock_i_max_next = stock_i;
       capacity_used++;
       // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
     }
