@@ -168,11 +168,6 @@ function unify_stock(is_stock_left_holey, stock_left, stock_right){
 
 
 
-// @f –– The wrapped function
-// @capacity –– The param count of f
-// @_capacity_used –– The remaining holes of _stock
-// @_stock –– The plugged holes so far
-// @_stock_i_min –– The minimum index to start stocking at.
 function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max, _is_holey){
   var _is_capacity_full = capacity === _capacity_used;
   return function intercept_arguments(){
@@ -186,7 +181,9 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     // index for various loops below
     var i;
 
-    // console.log('\n\nInvoked: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, arguments)
+    // // console.log('\n\nSTART: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, arguments)
+    // console.log('\n\n\n\nSTART (%s)  |  capacity: %d', format_arguments(arguments), capacity);
+    // console.log('     _capacity_used: %d  | _stock: %j  | _stock_i_min: %d  | _stock_i_max: %d  | _is_holey: %j', _capacity_used, _stock, _stock_i_min, _stock_i_max, _is_holey);
 
     // Stock cloning, to avoid clobbering
     // We can use argument min/max to avoid
@@ -213,8 +210,9 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     var limit = stock_i_max + 1;
     process_new_arguments:
     for(i = 0; i !== endloop; i += incby) {
-      // console.log('\nend condition: %d !== %d | stock_i: %d', i, endloop, stock_i);
       argument = arguments[i];
+      // console.log('\nLOOP %d/%d: %s', i, endloop, format_argument(argument));
+      // console.log(' INIT capacity_used: %d  |  stock_i_min: %d  |  stock_i_max: %d  |  is_holey: %j  |  stock: %j  |  stock_i: %d', capacity_used, stock_i_min, stock_i_max, is_holey, stock, stock_i);
 
       if (argument === _) {
         is_delayed_execution = true;
@@ -223,7 +221,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         if (i + incby === endloop) break;
         is_holey = true;
         stock_i += incby
-        // console.log('Hit Hole _, offset @ %d');
+        // console.log('  FIN capacity_used: %d  |  stock_i_min: %d  |  stock_i_max: %d  |  is_holey: %j  |  stock_i: %d  |  stock: %j', capacity_used, stock_i_min, stock_i_max, is_holey, stock_i, stock);
         continue;
       }
 
@@ -233,9 +231,10 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         incby = -1;
         stock_i = stock_i_max;
         limit = stock_i_min - 1;
-        // console.log('Hit shoulder ___ of size (%d)', (arguments_count - (i + 1)));
+        // console.log('shoulder size: (%d)', (arguments_count - (i + 1)));
         endloop = i;
         i = arguments_count;
+        // console.log('  FIN capacity_used: %d  |  stock_i_min: %d  |  stock_i_max: %d  |  is_holey: %j  |  stock_i: %d  |  stock: %j', capacity_used, stock_i_min, stock_i_max, is_holey, stock_i, stock);
         continue;
       }
 
@@ -244,14 +243,16 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
           // If an argument falls out of bounds, discard it.
           // Also discard everything after, because all subsequent
           // arguments will be out of bounds too.
-          if (stock_i === limit) break process_new_arguments;
+          if (stock_i === limit) {
+            // console.log('  EXT stock_i (%d) reached limit (%d)', stock_i, limit);
+            break process_new_arguments;
+          }
           stock_i += incby;
         }
       }
 
       // With an argument and and its resolved index in hand,
       // stock it!
-      // console.log('Add argument: %j @ i%d', argument, stock_i);
       stock[stock_i] = argument;
       // Take note of new argument minimum/maximums.
       // For example if the min is at 0 and we fill 0 we know we can
@@ -264,13 +265,10 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       else if (stock_i_max === stock_i) { stock_i_max--; }
       capacity_used++;
       stock_i += incby;
-      // console.log('stock: %j', stock);
+      // console.log('  FIN capacity_used: %d  |  stock_i_min: %d  |  stock_i_max: %d  |  is_holey: %j  |  stock_i: %d  |  stock: %j', capacity_used, stock_i_min, stock_i_max, is_holey, stock_i, stock);
     }
 
-
-    // console.log('\nProcessing Complete. ')
-    // console.log('Not applicable, stock: %j', stock);
-    // console.log('Applicable! %j', stock);
+    // console.log('\nEND\n      capacity_used: %d  |  stock_i_min: %d  |  stock_i_max: %d  |  is_holey: %j  |  stock: %j', capacity_used, stock_i_min, stock_i_max, is_holey, stock);
     return is_delayed_execution || capacity !== capacity_used ?
       accumulate_arguments(f, capacity, capacity_used, stock, stock_i_min, stock_i_max, is_holey) :
       f.apply(null, stock) ;
@@ -343,4 +341,14 @@ function clone_stock(array, less_than, greater_than, else_value){
     i++;
   }
   return clone;
+}
+
+function format_argument(arg){
+  if (arg === _) return '_';
+  if (arg === ___) return '___';
+  return arg;
+}
+
+function format_arguments(args){
+  return Array.prototype.slice.apply(args).map(format_argument).join(', ');
 }
