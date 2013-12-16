@@ -201,8 +201,10 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     var buffered_hole_count = 0;
     var hole_count_instance = hole_count;
 
-    var i = 0;
+    var has_right_shoulder = false;
     var is_delayed_execution = false;
+
+    var i = 0;
     var argument;
     var stock_i = l_stock_i_min;
     var endloop = arguments_count;
@@ -234,6 +236,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       if (argument === ___) {
         is_delayed_execution = true;
         if (i + 1 === endloop) { i++; break; }
+        has_right_shoulder = true;
         hole_count_instance = r_hole_count;
         stock_i = r_stock_i_min;
         stock_i_limit = l_stock_i_min - 1;
@@ -295,7 +298,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
     }
 
-    if (i !== endloop) {
+    if (has_right_shoulder) {
       // console.log('\nPROCESS R ARGUMENTS');
       // Don't need to handle:
       // - delayed execution tracking
