@@ -205,7 +205,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     process_new_arguments:
     for(i = 0; i !== endloop; i += incby) {
       argument = arguments[i];
-      // console.log('\nLOOP %d/%d: %s', i, endloop, format_argument(argument));
+      // console.log('\nLOOP %d/%d: %s', i+incby, endloop, format_argument(argument));
       // console.log(' INIT capacity_used: %d  |  stock_i_min: %d  |  stock_i_max: %d  |  is_holey: %j  |  stock: %j  |  stock_i: %d', capacity_used, stock_i_min, stock_i_max, is_holey, stock, stock_i);
 
       if (argument === _) {
