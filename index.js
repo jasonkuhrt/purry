@@ -10,7 +10,7 @@ var purry = module.exports = function(f){
       initial_stock.push(_);
       i--;
     }
-    return accumulate_arguments(f, f.length, 0, initial_stock, 0, 0, f.length - 1, f.length - 1, 0, 0);
+    return accumulate_arguments(f, f.length, initial_stock, 0, 0, f.length - 1, f.length - 1, 0, 0);
   } else {
     return accumulate_variable_arguments(f, [], false, [], false, 0, 0);
   }
@@ -18,7 +18,7 @@ var purry = module.exports = function(f){
 
 
 
-function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _stock_right, _is_stock_right_holey, _stock_i_min, _r_stock_i_min){
+function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _stock_right, _is_stock_right_holey, _l_stock_i_min, _r_stock_i_min){
   return function(){
     var arguments_count = arguments.length;
 
@@ -38,7 +38,7 @@ function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _st
     var stock_right = clone_array(_stock_right);
 
     // State shadowing, to avoid clobbering
-    var l_stock_i_min = _stock_i_min;
+    var l_stock_i_min = _l_stock_i_min;
     var r_stock_i_min = _r_stock_i_min;
 
     // If the first argument is a pin it means there is no left shoulder
@@ -163,21 +163,17 @@ function unify_stock(is_stock_left_holey, stock_left, stock_right){
 
 
 
-function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min, _stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count){
-  var _is_capacity_full = capacity === _capacity_used;
+function accumulate_arguments(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count){
   return function intercept_arguments(){
     var arguments_count = arguments.length;
 
     // Bail if no arguments given
     if (!arguments_count) {
-      return _is_capacity_full ? f.apply(null, _stock) : intercept_arguments ;
+      return _remaining ? intercept_arguments : f.apply(null, _stock)  ;
     }
 
-    // index for various loops below
-    var i;
-
-    // console.log('\n\n\n\nSTART (%s)  |  capacity: %d', format_arguments(arguments), capacity);
-    // console.log('     _capacity_used: %d  | _stock_i_min: %d  | _stock_i_max_next: %d  | _r_stock_i_min: %d  | _r_stock_i_max_next: %d  | _hole_count: %d  | _r_hole_count: %d  | _stock: %j', _capacity_used, _stock_i_min, _stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count, _stock);
+    // console.log('\n\n\n\nSTART (%s)', format_arguments(arguments));
+    // console.log('     _remaining: %d  | _l_stock_i_min: %d  | _l_stock_i_max_next: %d  | _r_stock_i_min: %d  | _r_stock_i_max_next: %d  | _hole_count: %d  | _r_hole_count: %d  | _stock: %j', _remaining, _l_stock_i_min, _l_stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count, _stock);
 
     // Stock cloning, to avoid clobbering
     // We can use argument min/max to avoid
@@ -185,14 +181,15 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     // above/below min/max we know we're dealing
     // with unfilled params. This optimization cannot
     // be used with holey functions.
-    // var stock = _hole_count ? clone_array(_stock) : clone_stock(_stock, _stock_i_min, _r_stock_i_min, _) ;
-    var stock = clone_array(_stock);
+    var stock = _hole_count || _r_hole_count ?
+      clone_array(_stock) :
+      clone_stock(_stock, _l_stock_i_min, _r_stock_i_min, _) ;
 
 
     // State shadowing, to avoid clobbering
-    var capacity_used = _capacity_used;
-    var l_stock_i_min = _stock_i_min;
-    var l_stock_i_max_next = _stock_i_max_next;
+    var remaining = _remaining;
+    var l_stock_i_min = _l_stock_i_min;
+    var l_stock_i_max_next = _l_stock_i_max_next;
     var r_stock_i_min = _r_stock_i_min;
     var r_stock_i_max_next = _r_stock_i_max_next;
 
@@ -213,7 +210,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     for(; i < endloop; i++) {
       argument = arguments[i];
       // console.log('\nLOOP %d/%d: %s', i+1, endloop, format_argument(argument));
-      // console.log(' INIT capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+      // console.log(' INIT remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
 
       if (argument === _) {
         is_delayed_execution = true;
@@ -229,7 +226,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
           hole_count_instance--;
           if (!hole_count_instance) stock_i = l_stock_i_max_next;
         }
-        // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
+        // console.log('  FIN remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
         continue;
       }
 
@@ -241,15 +238,14 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         stock_i = r_stock_i_min;
         stock_i_limit = l_stock_i_min - 1;
         endloop = i;
-        buffered_hole_count = 0;
         i = arguments_count - 1;
-        // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  | stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+        // console.log('  EXT remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  | stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
         break;
       }
 
       hole_count += buffered_hole_count ;
       buffered_hole_count = 0;
-      // console.log('  BUF capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+      // console.log('  BUF remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
 
       // TODO break, really? Or continue? If we break but have an unread _ or ___ then we miss noting that this is a delayed invocation?...
       if (stock_i === stock_i_limit) break;
@@ -281,21 +277,13 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         }
       } else {
         stock[stock_i] = argument;
-        if      (l_stock_i_min === stock_i) { l_stock_i_min++; }
-        else if (r_stock_i_min === stock_i) { r_stock_i_min--; }
+        if (stock_i === l_stock_i_min) l_stock_i_min++;
         stock_i++;
       }
 
-      // Take note of new argument minimum/maximums.
-      // For example if the min is at 0 and we fill 0 we know we can
-      // never fill it again.
-      // These markers allow subsequent invocation to start/stop
-      // stock_i at optimized points meaning a certain amount of
-      // loops are skipped. In fact if allows us to only require a
-      // inner while-loop for holey-functions.
       if (stock_i > l_stock_i_max_next) l_stock_i_max_next = stock_i;
-      capacity_used++;
-      // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+      remaining--;
+      // console.log('  FIN remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
     }
 
     if (has_right_shoulder) {
@@ -309,7 +297,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
       for (; i > endloop; i--) {
         argument = arguments[i];
         // console.log('\nLOOP %d/%d: %s', i - 1, endloop, format_argument(argument));
-        // console.log(' INIT capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+        // console.log(' INIT remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
         if (argument === _) {
           if (i - 1 === endloop) {
             break;
@@ -322,13 +310,13 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
             hole_count_instance--;
             if (!hole_count_instance) stock_i = r_stock_i_max_next ;
           }
-          // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
+          // console.log('  FIN remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
           continue;
         }
 
         r_hole_count += buffered_hole_count;
         buffered_hole_count = 0;
-        // console.log('  BUF capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+        // console.log('  BUF remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
 
         // TODO break, really? Or continue? If we break but have an unread _ or ___ then we miss noting that this is a delayed invocation?...
         if (stock_i === stock_i_limit) break;
@@ -360,20 +348,19 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
           }
         } else {
           stock[stock_i] = argument;
-          if      (l_stock_i_min === stock_i) { l_stock_i_min++; }
-          else if (r_stock_i_min === stock_i) { r_stock_i_min--; }
+          if (stock_i === r_stock_i_min) r_stock_i_min--;
           stock_i--;
         }
 
         if (stock_i < r_stock_i_max_next) r_stock_i_max_next = stock_i;
-        capacity_used++;
-        // console.log('  FIN capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+        remaining--;
+        // console.log('  FIN remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
       }
     }
 
-    // console.log('\nEND\n      capacity_used: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j', capacity_used, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock);
-    return is_delayed_execution || capacity !== capacity_used ?
-      accumulate_arguments(f, capacity, capacity_used, stock, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count) :
+    // console.log('\nEND\n      remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock);
+    return is_delayed_execution || remaining ?
+      accumulate_arguments(f, remaining, stock, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count) :
       f.apply(null, stock) ;
   };
 }
