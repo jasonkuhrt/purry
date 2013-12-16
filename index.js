@@ -18,11 +18,6 @@ var purry = module.exports = function(f){
 
 
 
-// @f –– The wrapped function
-// @capacity –– The param count of f
-// @_capacity_used –– The remaining holes of _stock
-// @_stock –– The plugged holes so far
-// @_stock_i_min –– The minimum index to start stocking at.
 function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _stock_right, _is_stock_right_holey, _stock_i_min, _stock_i_max){
   return function(){
     var arguments_count = arguments.length;
@@ -57,8 +52,8 @@ function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _st
     var stock_i = stock_i_min;
     var incby = 1;
     var endloop = arguments_count;
-    // var limit = stock_i_max + 1;
-    var limit = stock.length;
+    // var stock_i_limit = stock_i_max + 1;
+    var stock_i_limit = stock.length;
     var is_holey = is_stock_left_holey;
     var _is_holey = _is_stock_left_holey;
     process_new_arguments:
@@ -82,7 +77,7 @@ function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _st
         is_delayed_execution = true;
         if (i + incby === endloop) break;
         // Switch to right shoulder
-        limit = stock_right.length;
+        stock_i_limit = stock_right.length;
         stock = stock_right;
         stock_i = 0;
         is_holey = is_stock_right_holey;
@@ -103,14 +98,14 @@ function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _st
       // scenario.
       if (_is_holey || is_holey) {
         while (stock[stock_i] !== _) {
-          // console.log('limit %j === stock_i %j %j?', limit, stock_i, limit === stock_i);
+          // console.log('stock_i_limit %j === stock_i %j %j?', stock_i_limit, stock_i, stock_i_limit === stock_i);
           // If argument falls out of bounds, stop looking for holes,
           // increase the shoulder size, and move on.
           // If this happens it might mean no holes exist at least anymore.
           // but ultimately this is decided in concert with the check for '_'
           // above
-          if (stock_i === limit) {
-            limit++;
+          if (stock_i === stock_i_limit) {
+            stock_i_limit++;
             break;
           }
           // Confirmed that this instance shoulder is holey
@@ -132,7 +127,7 @@ function accumulate_variable_arguments(f, _stock_left, _is_stock_left_holey, _st
         // if      (stock_i_min === stock_i) { stock_i_min++; }
         // else if (stock_i_max === stock_i) { stock_i_max--; }
         stock_i++;
-        limit++;
+        stock_i_limit++;
       }
       // console.log('State: Stock: %j %j', stock_left, stock_right);
     }
@@ -181,9 +176,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     // index for various loops below
     var i;
 
-    // // console.log('\n\nSTART: capacity %d | instance capacity %d | stock %j | new args %j', capacity, capacity - _capacity_used, _stock, arguments)
     // console.log('\n\n\n\nSTART (%s)  |  capacity: %d', format_arguments(arguments), capacity);
-    // console.log('     _capacity_used: %d  | _stock: %j  | _stock_i_min: %d  | _stock_i_max: %d  | _is_holey: %j', _capacity_used, _stock, _stock_i_min, _stock_i_max, _is_holey);
+    // console.log('     _capacity_used: %d  | _stock_i_min: %d  | _stock_i_max: %d  | _is_holey: %j  | _stock: %j', _capacity_used, _stock_i_min, _stock_i_max, _is_holey, _stock);
 
     // Stock cloning, to avoid clobbering
     // We can use argument min/max to avoid
@@ -207,7 +201,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
     var stock_i = stock_i_min;
     var incby = 1;
     var endloop = arguments_count;
-    var limit = stock_i_max + 1;
+    var stock_i_limit = stock_i_max + 1;
     process_new_arguments:
     for(i = 0; i !== endloop; i += incby) {
       argument = arguments[i];
@@ -230,7 +224,7 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
         if (i + incby === endloop) break;
         incby = -1;
         stock_i = stock_i_max;
-        limit = stock_i_min - 1;
+        stock_i_limit = stock_i_min - 1;
         // console.log('shoulder size: (%d)', (arguments_count - (i + 1)));
         endloop = i;
         i = arguments_count;
@@ -243,8 +237,8 @@ function accumulate_arguments(f, capacity, _capacity_used, _stock, _stock_i_min,
           // If an argument falls out of bounds, discard it.
           // Also discard everything after, because all subsequent
           // arguments will be out of bounds too.
-          if (stock_i === limit) {
-            // console.log('  EXT stock_i (%d) reached limit (%d)', stock_i, limit);
+          if (stock_i === stock_i_limit) {
+            // console.log('  EXT stock_i (%d) reached stock_i_limit (%d)', stock_i, stock_i_limit);
             break process_new_arguments;
           }
           stock_i += incby;
