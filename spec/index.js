@@ -12,15 +12,15 @@ var test_partialing = function(r, f){
         r(f(1,2,3,4,5,6,___)());
       });
 
-      it('Each application sends arguments to the left shoulder, in order of application (earlier is farther left)', function(){
+      it('each application sends arguments to the left shoulder, in order of application (earlier is farther left)', function(){
         r(f(1,___)(2,___)(3,___)(4,___)(5,___)(6,___)());
       });
 
-      it('May argue only some initial parameters', function(){
+      it('may argue only some initial parameters', function(){
         r(f(1,2,3,___)(4,5,6));
       });
 
-      it('May repeatedly argue some initial parameters', function(){
+      it('may repeatedly argue some initial parameters', function(){
         r(f(1,2,3,___)(4,5,___)(6));
       });
 
