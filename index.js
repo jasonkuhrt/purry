@@ -14,7 +14,7 @@ var purry = module.exports = function(f){
     }
     return stock_args(f, f.length, initial_stock, 0, 0, f.length - 1, f.length - 1, 0, 0);
   } else {
-    return stock_vargs(f, [], false, [], false, 0, 0);
+    return stock_vargs(f, [], false, 0, [], false, 0);
   }
 };
 
