@@ -1,4 +1,4 @@
-var accumulate_variable_arguments = require('./lib/accumulate-variable-arguments');
+var stock_vargs = require('./lib/stock-vargs');
 var clone_array = require('./lib/clone-array');
 var ___ = '___send-to-shoulder___';
 var _ = '_hole_';
@@ -12,9 +12,9 @@ var purry = module.exports = function(f){
       initial_stock.push(_);
       i--;
     }
-    return accumulate_arguments(f, f.length, initial_stock, 0, 0, f.length - 1, f.length - 1, 0, 0);
+    return stock_args(f, f.length, initial_stock, 0, 0, f.length - 1, f.length - 1, 0, 0);
   } else {
-    return accumulate_variable_arguments(f, [], false, [], false, 0, 0);
+    return stock_vargs(f, [], false, [], false, 0, 0);
   }
 };
 
@@ -26,7 +26,7 @@ var purry = module.exports = function(f){
 
 
 
-function accumulate_arguments(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count){
+function stock_args(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count){
   return function intercept_arguments(){
     var arguments_count = arguments.length;
 
@@ -223,7 +223,7 @@ function accumulate_arguments(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_
 
     // console.log('\nEND\n      remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock);
     return is_delayed_execution || remaining ?
-      accumulate_arguments(f, remaining, stock, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count) :
+      stock_args(f, remaining, stock, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count) :
       f.apply(null, stock) ;
   };
 }
