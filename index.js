@@ -1,7 +1,9 @@
 var stock_vargs = require('./lib/stock-vargs');
 var clone_array = require('./lib/clone-array');
-var ___ = '___send-to-shoulder___';
-var _ = '_hole_';
+var syntax = require('./lib/syntax');
+var debug = require('./lib/debug');
+var ___ = syntax.pin.value;
+var _ = syntax.hole.value;
 
 
 var purry = module.exports = function(f){
@@ -20,12 +22,6 @@ var purry = module.exports = function(f){
 
 
 
-
-
-
-
-
-
 function stock_args(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count){
   return function intercept_arguments(){
     var arguments_count = arguments.length;
@@ -35,7 +31,7 @@ function stock_args(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, 
       return _remaining ? intercept_arguments : f.apply(null, _stock)  ;
     }
 
-    // console.log('\n\n\n\nSTART (%s)', format_arguments(arguments));
+    // debug.start(arguments);
     // console.log('     _remaining: %d  | _l_stock_i_min: %d  | _l_stock_i_max_next: %d  | _r_stock_i_min: %d  | _r_stock_i_max_next: %d  | _hole_count: %d  | _r_hole_count: %d  | _stock: %j', _remaining, _l_stock_i_min, _l_stock_i_max_next, _r_stock_i_min, _r_stock_i_max_next, _hole_count, _r_hole_count, _stock);
 
     // Stock cloning, to avoid clobbering
@@ -263,18 +259,15 @@ purry.installSyntax = function(symbol_, symbol___){
 
 
 // Install default global purry identifiers by default.
-// This assumes almost all purry users will want the _ and ___
+// This assumes almost all purry users will want the default
 // 'syntax' and want it globally. If true, and this author belives
 // it is, it follows that opt-out is better than opt-in.
 // purry.noConflict may always undo this.
-purry.install('_', '___');
+purry.install(syntax.hole.symbol, syntax.pin.symbol);
 
 
 
 // Private Helpers
-
-
-
 
 function clone_stock(array, less_than, greater_than, else_value){
   var clone = [];
@@ -285,14 +278,4 @@ function clone_stock(array, less_than, greater_than, else_value){
     i++;
   }
   return clone;
-}
-
-function format_argument(arg){
-  if (arg === _) return '_';
-  if (arg === ___) return '___';
-  return arg;
-}
-
-function format_arguments(args){
-  return Array.prototype.slice.apply(args).map(format_argument).join(', ');
 }
