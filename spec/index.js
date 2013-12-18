@@ -11,7 +11,7 @@ describe('purry', function(){
 
   require('./currying')(purry);
 
-  describe('Partially Applying a six-parameter function', function(){
+  describe('partialing a 6param-function', function(){
 
     test_partialing(is_result, echo);
 
@@ -21,7 +21,7 @@ describe('purry', function(){
     });
   });
 
-  describe('Partially Applying a variable-parameter function', function(){
+  describe('partialing a vparam-function', function(){
     var f = purry(function(){
       return Array.prototype.slice.apply(arguments);
     });
@@ -29,12 +29,35 @@ describe('purry', function(){
     test_partialing(is_result, f);
 
     describe('implementation details', function(){
+
+      describe('delaying with', function(){
+
+        it('one pin', function(){
+          is_result(f(1,2,3,4,5,6,___)(___)());
+          is_result(f(1,2,3,4,5,6,___)(___)(___)());
+        });
+
+        it('one hole', function(){
+          is_result(f(1,2,3,4,5,6,___)(_)());
+          is_result(f(1,2,3,4,5,6,___)(_)(_)());
+        });
+
+        // many pins would be an error
+
+        it('many holes', function(){
+          is_result(f(1,2,3,4,5,6,___)(_,_,_)());
+          is_result(f(1,2,3,4,5,6,___)(_,_)(_,_)());
+        });
+
+      });
+
       describe('hole-tracking-optimizations do not cause subtle bugs', function(){
         // Holey functions slow performance.
-        // Hole-tracking finda the optimal path.
+        // Hole-tracking finds the optimal path.
         it('Left-shoulder holes are stored even when following invocation does not interact with left-shoulder', function(){
           is_result(f(_,2,3)(___,6)(1,4,5));
         });
+
         it('Right-shoulder holes are stored even when following invocation does not interact with right-shoulder', function(){
           is_result(f(___,4,5,_)(1,2,___)(___,6)(3));
         });
