@@ -2,6 +2,7 @@ var stock_vargs = require('./lib/stock-vargs');
 var clone_array = require('./lib/clone-array');
 var syntax = require('./lib/syntax');
 var debug = require('./lib/debug');
+var errors = require('./lib/errors');
 var ___ = syntax.pin.value;
 var _ = syntax.hole.value;
 
@@ -16,7 +17,7 @@ var purry = module.exports = function(f){
     }
     return stock_args(f, f.length, initial_stock, 0, 0, f.length - 1, f.length - 1, 0, 0);
   } else {
-    return stock_vargs(f, [], false, 0, [], false, 0);
+    return stock_vargs(f, [], 0, 0, [], 0, 0);
   }
 };
 
@@ -68,26 +69,8 @@ function stock_args(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, 
     process_l_arguments:
     for(; i < endloop; i++) {
       argument = arguments[i];
-      // debug.loop(argument);
+      // debug.loop(i, endloop, argument);
       // console.log(' INIT remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
-
-      if (argument === _) {
-        is_delayed_execution = true;
-        // If _ is last argument it has no affect
-        // other than delaying execution.
-        if (i + 1 === endloop) break;
-        if (stock_i === l_stock_i_max_next) {
-          // console.log('  Match instance hole to never-seen stock param');
-          buffered_hole_count++;
-          stock_i++;
-        } else {
-          // console.log('  Match instance hole to already-seen stock hole');
-          hole_count_instance--;
-          if (!hole_count_instance) stock_i = l_stock_i_max_next;
-        }
-        // console.log('  FIN remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
-        continue;
-      }
 
       if (argument === ___) {
         is_delayed_execution = true;
@@ -100,6 +83,25 @@ function stock_args(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, 
         i = arguments_count - 1;
         // console.log('  EXT remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  | stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
         break;
+      }
+
+      if (argument === _) {
+        is_delayed_execution = true;
+        // If _ is last argument it has no affect
+        // other than delaying execution.
+        if (i + 1 === endloop) break;
+        if (stock_i === l_stock_i_max_next) {
+          // console.log('  Match instance hole to never-seen stock param');
+          buffered_hole_count++;
+          l_stock_i_max_next++;
+          stock_i++;
+        } else {
+          // console.log('  Match instance hole to already-seen stock hole');
+          hole_count_instance--;
+          if (!hole_count_instance) stock_i = l_stock_i_max_next;
+        }
+        // console.log('  FIN remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock_i: %d  |  stock: %j', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock_i, stock);
+        continue;
       }
 
       hole_count += buffered_hole_count ;
@@ -145,18 +147,26 @@ function stock_args(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, 
       // console.log('  FIN remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
     }
 
+    // If we have anything buffered it means
+    // there were trailing holes, which should
+    // be ignored. To ignore them, rollback the
+    // i_max_next by the buffer size.
+    l_stock_i_max_next -= buffered_hole_count;
+    buffered_hole_count = 0;
+
     if (has_right_shoulder) {
       // console.log('\nPROCESS R ARGUMENTS');
       // Don't need to handle:
       // - delayed execution tracking
       //   since being in this loop implies being delayed
       // - right-shoulder
-      //   since only 1 is allowed (TODO) per instnace
+      //   since only 1 is allowed per instnace
       process_r_arguments:
       for (; i > endloop; i--) {
         argument = arguments[i];
-        // console.log('\nLOOP %d/%d: %s', i - 1, endloop, format_argument(argument));
+        // debug.loop(i - 1, endloop, argument);
         // console.log(' INIT remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
+        if (argument === ___) throw errors.pins_error();
         if (argument === _) {
           if (i - 1 === endloop) {
             break;
