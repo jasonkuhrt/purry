@@ -68,7 +68,7 @@ function stock_args(f, _remaining, _stock, _l_stock_i_min, _l_stock_i_max_next, 
     process_l_arguments:
     for(; i < endloop; i++) {
       argument = arguments[i];
-      // console.log('\nLOOP %d/%d: %s', i+1, endloop, format_argument(argument));
+      // debug.loop(argument);
       // console.log(' INIT remaining: %d  |  l_stock_i_min: %d  |  l_stock_i_max_next: %d  |  r_stock_i_min: %d  |  r_stock_i_max_next: %d  |  hole_count: %d  |  r_hole_count: %d  |  stock: %j  |  stock_i: %d', remaining, l_stock_i_min, l_stock_i_max_next, r_stock_i_min, r_stock_i_max_next, hole_count, r_hole_count, stock, stock_i);
 
       if (argument === _) {
