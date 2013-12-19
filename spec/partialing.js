@@ -1,4 +1,5 @@
 var assert = require('assert');
+var util = require('./util');
 
 
 
@@ -7,7 +8,6 @@ module.exports = function(is_result, f){
   it.skip('drops over-partialed arguments right-to-left', function(){
     is_result(f(1,2,3,4,5,6,7,8,9,10,___)())
   });
-
 
   it('throws an error if >1 pin used in an instance', function(){
     var err_message;
@@ -155,9 +155,18 @@ module.exports = function(is_result, f){
   });
 
 
-  describe('pesky bugs (general)', function(){
+  describe('pesky bugs (discovered edge-cases)', function(){
+    it.skip('Unargued holes are discarded at union time?', function(){
+      f.check(f(_,_,_,1,2)(_,_,_,_,4,5,6)(_,_,_,3)());
+    });
+
     it('invocation without holes does not wipeout existing hole tracking', function(){
       is_result(f(_,_,_,_,5,_)(1,2,___)(3,4,6));
+    });
+
+    it('(_,2,_4)(_,3)(1)', function(){
+      var echo = util.create_fixed_echo(4);
+      echo.check(echo(_,2,_,4)(_,3)(1));
     });
   });
 };
