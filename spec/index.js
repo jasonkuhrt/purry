@@ -24,6 +24,11 @@ describe('purry', function(){
       });
     });
 
+    it('(_, _, _, 4)(1)(_, 3, 5, 6)(2, 7)', function(){
+      var f = create_fixed_echo(7)
+      f.check(f(_, _, _, 4)(1)(_, 3, 5, 6)(2, 7));
+    });
+
     it('Holes count against the param count during invocation thus predictably dropping over-supplied arguments', function(){
       // 7 is dropped, param count is 4 but 5 args given
       f.check(f(_,2,3,_,_,_)(_,4,5,6,7)(1))
