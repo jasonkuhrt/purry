@@ -4,10 +4,10 @@
   "description": "Symbiotic, high-performance currying and partial application",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha ./spec/index.js --reporter spec",
-    "dev": "./node_modules/.bin/mocha ./spec/index.js --reporter min --watch",
-    "dev-spec": "./node_modules/.bin/mocha ./spec/index.js --reporter spec --watch",
-    "fuzzy-test": "node ./spec/fuzzy",
+    "test": "./node_modules/.bin/mocha ./test/index.js --reporter spec",
+    "dev": "./node_modules/.bin/mocha ./test/index.js --reporter min --watch",
+    "dev-test": "./node_modules/.bin/mocha ./test/index.js --reporter spec --watch",
+    "fuzzy-test": "node ./test/fuzzy",
     "bench-slow": "node ./bench/index.js | tee bench/bench-results-$(date +%s).txt",
     "bench-fast": "node ./bench/index.js 0.1 | tee bench/bench-results-$(date +%s).txt",
     "bench-sketch": "node ./bench/index.js 0.1"
@@ -28,6 +28,7 @@
   "devDependencies": {
     "mocha": "~1.15.1",
     "benchmark": "~1.0.0",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "debug": "~0.7.4"
   }
 }

@@ -6,17 +6,22 @@ var _ = syntax.hole.value;
 
 
 var purry = module.exports = function(f){
-  if (f.length) {
-    var initial_stock = [];
-    var i = f.length;
-    while(i > 0){
-      initial_stock.push(_);
-      i--;
-    }
-    return stock_args(f, f.length, initial_stock, 0, 0, f.length - 1, f.length - 1, 0, 0);
+  var params_size = f.length;
+  if (params_size) {
+    return stock_args(f, array_of(params_size, _), params_size, 0, params_size - 1);
   } else {
     return stock_vargs(f, [], 0, 0, [], 0, 0);
   }
+};
+
+function array_of(size, value){
+    var arr = [];
+    var i = size;
+    while (i > 0) {
+      arr.push(value);
+      i--;
+    }
+    return arr;
 };
 
 

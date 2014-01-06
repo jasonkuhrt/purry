@@ -168,5 +168,15 @@ module.exports = function(is_result, f){
       var echo = util.create_fixed_echo(4);
       echo.check(echo(_,2,_,4)(_,3)(1));
     });
+
+    it('(___, 2, _, _, _, _)(1, _, _, _, 6, ___)(___, 3, 4, 5)()', function(){
+      var echo = util.create_fixed_echo(6);
+      echo.check(echo(___, 2, _, _, _, _)(1, _, _, _, 6, ___)(___, 3, 4, 5)());
+    });
+
+    it('(1, _, _, _, ___, 2, _)(_, ___, _, _, _)(3, _, _, _, ___)()', function(){
+      var echo = util.create_fixed_echo(3);
+      echo.check(echo(1, _, _, _, ___, 2, _)(_, ___, _, _, _)(3, _, _, _, ___)());
+    });
   });
 };

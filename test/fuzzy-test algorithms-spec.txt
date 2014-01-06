@@ -1,0 +1,99 @@
+// (p) Create a pool of arguments. Generate an integer array incrementing by 1. One until a random integer.
+// (f) Randomly generate either a fixed-param count or var-param count function
+// (a) Create an argument instance
+// apply f with a and subtract a from p to derive new p_/f_
+// Recursively repeat previous two steps until derived p_ is empty
+// Verify that p is equal to final f_
+// Display the verification if it fails
+
+(f)
+// (z) Copy random indexes (little as none, most as all) from p
+// (a) Create empty array to store arguments
+// (pi) Randomly pick one of four pin options: none, left, right, left/right
+
+// The technique involved depends on the function param count type
+// fixed type function?
+//     picked right?
+//         Loop backwards over the pool until i equals z head
+//         either shift the pool value into args or if i is not found in z shift _ into the args
+//         randomly shift 0+ _ to args
+//     picked left?
+//         Loop forwards over the pool until i equals z tail
+//         either push the pool value into args or if i is not found in z push _ into the args
+//         randomly push 0+ _ to args
+//     picked left/right?
+//        randomly split z into z1 and z2
+//        z1 same as "picked left"
+//        z2 same as "picked right"
+//        concatenate results with a pin inbetween like so z1_..., ___, z2_...
+//     picked none?
+//         same as "picked left"
+// vparam type function?
+//     patch state with property rha_pool, value array
+//     picked right?
+//        same as "fixed type function"
+//        add all the real arguments to the rha_pool
+//     picked left?
+//        clone rha_pool
+//        same as "fixed type function"
+//        loop through args (arg, i)
+//        x = sum all rha_pool values less than arg
+//        splice _ x times into args immediately before curent i
+//        remove rha_pool values that were found to be less than arg
+//        advance i by x
+//     picked left/right
+//        randomly split z into z1 and z2
+//        process z2 before z1 as the results of z2 affect z1 (rha_pool is affected by z2)
+//        z2 same as "picked right"
+//        z1 same as "picked left"
+//        concatenate results with a pin inbetween like so z1_..., ___, z2_...
+//     picked none?
+//        same as "picked left"
+
+
+
+// rha_pool examples
+
+/*
+pool [1,2,3,4,5,6]
+      ^   ^     ^
+     (1,_,3,_,_,6)
+
+pool [2,4,5]
+      ^   ^
+     (___,2,_,5) rha_pool.push(2,5)
+
+pool [4]
+      ^
+     ((sum of rha count < 4), 4, ___)
+*/
+
+/*
+pool [1,2,3,4,5,6]
+      ^   ^     ^
+     (1,_,3,_,_,6)
+
+pool [2,4,5]
+      ^ ^
+     (___,2,4,_) rha_pool.push(2,4)
+
+pool [5]
+      ^
+     ((sum of rha count < 5), 5, ___)
+*/
+
+
+/*
+pool [1,2,3,4,5,6]
+      ^   ^
+     (1,_,3)
+
+pool [2,4,5,6]
+      ^   ^
+     (___,2,_,5,_) rha_pool.push(2,5)
+
+pool [4,6]
+      ^ ^
+     ((sum of rha count < 4),4,(sum of rha count < 6),6,___)
+     (_,4,_,6)
+*/

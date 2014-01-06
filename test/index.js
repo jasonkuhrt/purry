@@ -24,6 +24,11 @@ describe('purry', function(){
       });
     });
 
+    it('(_, 2, 3, 4, 5, 6, 7, ___, 8, _)()()(1, 9)', function(){
+      var f = create_fixed_echo(9);
+      f.check(f(_, 2, 3, 4, 5, 6, 7, ___, 8, _)()()(1, 9));
+    });
+
     it('(_, _, _, 4)(1)(_, 3, 5, 6)(2, 7)', function(){
       var f = create_fixed_echo(7)
       f.check(f(_, _, _, 4)(1)(_, 3, 5, 6)(2, 7));
