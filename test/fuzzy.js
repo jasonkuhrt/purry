@@ -47,14 +47,6 @@ each(reports, display_report(show));
 
 // Library
 
-function amass(f, times_count){
-  var amassed = [];
-  times(times_count, function(){
-    amassed.push(f());
-  });
-  return amassed;
-}
-
 function display_report(display_mode){
   return function(report){
     if (display_mode === 3 || Boolean(display_mode) === report.is_pass) console.log(report.string)
@@ -63,7 +55,7 @@ function display_report(display_mode){
 
 function create_fuzzy_test(){
   return compose(report_fuzz, resolve_fuzz, create_fuzz)();
-};
+}
 
 function create_fuzz(){
   var pool = random_range_from(1, 12);
@@ -107,12 +99,20 @@ function report_fuzz(fuzz){
 
 // f, [a] -> [a]
 function resolve_fuzz(fuzz){
-  var result = argue_fuzz(fuzz.f, fuzz.pool, fuzz.history);
-  if (contains_partial(last(result.history))){
-    result.f = result.f();
-    result.history.push([]);
+  return fuzz.is_vargs ? resolve_fuzz_vargs(fuzz) : resolve_fuzz_args(fuzz) ;
+}
+
+function resolve_fuzz_args(fuzz){
+  return finish(argue_fuzz(fuzz.f, fuzz.pool, fuzz.history));
+
+  function finish(result){
+    if (contains_partial(last(result.history))){
+      result.f = result.f();
+      result.history.push([]);
+    }
+    return result;
   }
-  return result;
+
   function argue_fuzz(f, pool, instance_history){
     if (typeof f !== 'function' && size(pool)) return {f:f, pool:fuzz.pool, is_vargs:fuzz.is_vargs, history:instance_history}
     log('argue_fuzz', pool, instance_history);
@@ -124,6 +124,10 @@ function resolve_fuzz(fuzz){
     log('argue_fuzz_ pool %j', pool_);
     return size(pool_) ? argue_fuzz(f_, pool_, instance_history_) : {f:f_, pool:fuzz.pool, is_vargs:fuzz.is_vargs, history:instance_history_} ;
   }
+}
+
+function resolve_fuzz_vargs(fuzz){
+
 }
 
 // @pin_side enum
@@ -250,4 +254,13 @@ function random_range_from(start, up_to){
 // -> Bool
 function random_bool(){
   return Boolean(random(0, 2));
+}
+
+// (-> a), int -> [a]
+function amass(f, times_count){
+  var amassed = [];
+  times(times_count, function(){
+    amassed.push(f());
+  });
+  return amassed;
 }
