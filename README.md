@@ -3,19 +3,7 @@
 
   Symbiotic, high-performance currying and partial application
 
-## Installation
-
-  With [component(1)](http://component.io):
-
-    component install jasonkuhrt/purry
-
-  With [npm(1)](http://npmjs.org):
-
-    npm install purry
-
-## API
-
-
+  This project is work-in-progress. I hope to complete a solid version in 2014. Contributions welcome.
 
 ## License
 

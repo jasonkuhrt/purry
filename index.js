@@ -1,28 +1,21 @@
-var stock_vargs = require('./lib/stock-vargs');
+'use strict';
+var array_of = require('./lib/array-of');
 var stock_args = require('./lib/stock-args');
 var syntax = require('./lib/syntax');
 var ___ = syntax.pin.value;
 var _ = syntax.hole.value;
 
 
+
 var purry = module.exports = function(f){
-  var params_size = f.length;
-  if (params_size) {
-    return stock_args(f, array_of(params_size, _), params_size, 0, params_size - 1);
-  } else {
-    return stock_vargs(f, [], 0, 0, [], 0, 0);
-  }
+  var psize = f.length;
+  return psize ?
+    stock_args(f, array_of(psize, _), psize, 0, psize-1) :
+    console.error('Purry does not currently support variable parameter functions.');
 };
 
-function array_of(size, value){
-    var arr = [];
-    var i = size;
-    while (i > 0) {
-      arr.push(value);
-      i--;
-    }
-    return arr;
-};
+
+
 
 
 
