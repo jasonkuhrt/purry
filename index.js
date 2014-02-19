@@ -11,7 +11,7 @@ var purry = module.exports = function(f){
   var psize = f.length;
   return psize ?
     stock_args(f, array_of(psize, _), psize, 0, psize-1) :
-    console.error('Purry does not currently support variable parameter functions.');
+    throw new Error('Sorry, Purry does not currently support variable parameter functions.');
 };
 
 
