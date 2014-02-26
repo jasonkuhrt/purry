@@ -4,14 +4,14 @@ var stock_args = require('./lib/stock-args');
 var syntax = require('./lib/syntax');
 var ___ = syntax.pin.value;
 var _ = syntax.hole.value;
+var errors = require('./lib/errors');
 
 
 
 var purry = module.exports = function(f){
   var psize = f.length;
-  return psize ?
-    stock_args(f, array_of(psize, _), psize, 0, psize-1) :
-    throw new Error('Sorry, Purry does not currently support variable parameter functions.');
+  if (!psize) throw errors.vargs();
+  stock_args(f, array_of(psize, _), psize, 0, psize-1);
 };
 
 
