@@ -1,3 +1,5 @@
+/* globals _, ___ */
+'use strict';
 var Benchmark = require('benchmark');
 var curry = require('lodash').curry;
 var partial = require('lodash').partial;
