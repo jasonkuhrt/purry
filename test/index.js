@@ -1,7 +1,7 @@
 'use strict';
-/* global describe */
+/* global describe, it */
 require('./lib/assert-extras');
-var purry = require('../');
+var purry = require('../').install();
 var util = require('./lib/util'),
     create_fixed_echo = util.create_fixed_echo;
     //create_vparam_echo = util.create_vparam_echo;

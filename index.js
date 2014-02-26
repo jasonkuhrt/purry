@@ -1,7 +1,6 @@
 'use strict';
 var Installer = require('./lib/installer');
 var array_of = require('./lib/array-of');
-var augment = require('./lib/augment');
 var errors = require('./lib/errors');
 var syntax = require('./lib/syntax'),
     _ = syntax.hole.value;
@@ -20,15 +19,17 @@ function purry(f){
 
 // Setup syntax installion commands.
 
-augment(purry, Installer.global(syntax.lookup));
+var globalBootstrapper = Installer.global(syntax.lookup);
 
-// Install default global purry identifiers.
-// This assumes almost all purry users will want
-// the default idents globally. If true, and this
-// author belives it is, then opt-out trumps opt-in.
-// .uninstall() can always undo this.
-purry.install(syntax.lookup);
+purry.install = function installPurry(mappings){
+  globalBootstrapper.install(mappings);
+  return purry;
+};
 
+purry.uninstall = function uninstallPurry(){
+  globalBootstrapper.uninstall();
+  return purry;
+};
 
 
 

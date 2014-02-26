@@ -5,6 +5,7 @@ var curry = require('lodash').curry;
 var partial = require('lodash').partial;
 var partialRight = require('lodash').partialRight;
 var purry = require('../');
+purry.install();
 var echo_args = function(a, b, c, d, e, f){
   return [a, b, c, d, e, f];
 };
