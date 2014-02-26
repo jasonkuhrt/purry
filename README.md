@@ -1,5 +1,4 @@
-
-# purry
+# purry [![Code Climate](https://codeclimate.com/github/jasonkuhrt/purry.png)](https://codeclimate.com/github/jasonkuhrt/purry)
 
   Symbiotic, high-performance currying and partial application
 
