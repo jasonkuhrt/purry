@@ -63,8 +63,8 @@ function create_report(test){
 
 
 function format_argument(arg){
-  if (arg === syntax.hole.value) return syntax.hole.symbol;
-  if (arg === syntax.pin.value) return syntax.pin.symbol;
+  if (arg === syntax.hole.value) return syntax.hole.ident;
+  if (arg === syntax.pin.value) return syntax.pin.ident;
   return arg;
 }
 
