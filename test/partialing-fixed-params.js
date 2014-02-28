@@ -7,7 +7,7 @@ var util = require('./lib/util'),
 
 
 module.exports = function(f){
-  describe.only('throws if args outnumber params', function(){
+  describe('throws if args outnumber params', function(){
     it('Out-of-bounds holes', function(){
       assert.throws_too_many_args(function(){
         f(1,2,3,4,_,_,_,_,_);
