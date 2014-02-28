@@ -7,7 +7,7 @@ var util = require('./lib/util'),
 
 
 module.exports = function(f){
-  describe('throws if args outnumber params', function(){
+  describe.only('throws if args outnumber params', function(){
     it('Out-of-bounds holes', function(){
       assert.throws_too_many_args(function(){
         f(1,2,3,4,_,_,_,_,_);
@@ -27,9 +27,9 @@ module.exports = function(f){
       });
     });
 
-    it('1 pin', function(){
+    it('1-pin and 1-hole', function(){
       assert.throws_too_many_args(function(){
-        f(0,1,2,3,4,5,___)(___);
+        f(0,1,2,3,4,5,___)(___,_);
       });
     });
 
@@ -37,6 +37,10 @@ module.exports = function(f){
       assert.throws_too_many_args(function(){
         f(0,1,2,3,4,5,___)(_);
       });
+    });
+
+    it('except if using 1-pin delaying technique', function(){
+      f.check(f(0,1,2,3,4,5,___)/*loaded!*/(___)/*delay*/()/*exec*/);
     });
 
   });

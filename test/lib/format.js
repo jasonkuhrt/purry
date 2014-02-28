@@ -77,7 +77,9 @@ function format_arguments(args){
 }
 
 function format_params(params){
-  var na_msg = 'N/A (Confused? Maybe function is for side-affects or params are already fully stocked?)';
+  var na_msg = params.length ?
+      format('N/A (function is primed with %d arguments)', params.length) :
+      format('N/A (function is vargs or maybe not take any arguments?') ;
   return filter(params, function(x){ return x === _; }).join(', ') || na_msg;
 }
 

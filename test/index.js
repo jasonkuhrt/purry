@@ -6,6 +6,7 @@ var util = require('./lib/util'),
     create_fixed_echo = util.create_fixed_echo;
     //create_vparam_echo = util.create_vparam_echo;
 var test_currying = require('./currying');
+var test_partialing_fixed = require('./partialing-fixed-params');
 var test_partialing = require('./partialing');
 
 
@@ -16,7 +17,7 @@ describe('purry', function(){
 
   describe('partialing a fixed-params-function', function(){
     var f = create_fixed_echo(6);
-    require('./partialing-fixed-params')(f);
+    test_partialing_fixed(f);
     test_partialing(f.check, f);
   });
 
