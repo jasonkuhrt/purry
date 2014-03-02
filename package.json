@@ -31,5 +31,16 @@
     "lodash": "~2.4.1",
     "debug": "~0.7.4",
     "ansicolors": "~0.3.2"
-  }
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jasonkuhrt/purry.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jasonkuhrt/purry/issues"
+  },
+  "homepage": "https://github.com/jasonkuhrt/purry"
 }
