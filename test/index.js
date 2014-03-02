@@ -1,5 +1,5 @@
 'use strict';
-/* global describe, it */
+/* global describe */
 require('./lib/assert-extras');
 var purry = require('../').install();
 var util = require('./lib/util'),

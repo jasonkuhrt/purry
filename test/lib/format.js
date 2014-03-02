@@ -2,6 +2,7 @@
 var format = require('util').format;
 var color = require('ansicolors');
 var syntax = require('../../lib/syntax');
+var revLookupOrPass = require('../../lib/utils/rev-lookup-or-pass');
 var lo = require('lodash'),
     first = lo.first,
     pluck = lo.pluck,
@@ -61,24 +62,23 @@ function create_report(test){
   return report;
 }
 
-
 function format_argument(arg){
-  return syntax.to_ident(arg);
-}
-
-function format_invocation(args){
-  return color.brightBlue(format('(%s)', format_arguments(args)));
+  return revLookupOrPass(syntax.tokens, arg);
 }
 
 function format_arguments(args){
   return toArray(args).map(format_argument).join(', ');
 }
 
+function format_invocation(args){
+  return color.brightBlue(format('(%s)', format_arguments(args)));
+}
+
 function format_params(params){
   var na_msg = params.length ?
       format('N/A (function is primed with %d arguments)', params.length) :
       format('N/A (function is vargs or maybe not take any arguments?') ;
-  return filter(params, function(x){ return x === syntax._; }).join(', ') || na_msg;
+  return filter(params, function(x){ return x === syntax.tokens._; }).join(', ') || na_msg;
 }
 
 function format_stock(stock, head, tail, args_count, instance_mark){
@@ -97,6 +97,8 @@ function space(size){
 function format_array(array){
   return format('[%s]', array.join(', '));
 }
+
+
 
 exports.stock = format_stock;
 exports.arg_test = format_test_history;
