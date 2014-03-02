@@ -63,9 +63,7 @@ function create_report(test){
 
 
 function format_argument(arg){
-  if (arg === syntax.hole.value) return syntax.hole.ident;
-  if (arg === syntax.pin.value) return syntax.pin.ident;
-  return arg;
+  return syntax.to_ident(arg);
 }
 
 function format_invocation(args){
@@ -80,7 +78,7 @@ function format_params(params){
   var na_msg = params.length ?
       format('N/A (function is primed with %d arguments)', params.length) :
       format('N/A (function is vargs or maybe not take any arguments?') ;
-  return filter(params, function(x){ return x === _; }).join(', ') || na_msg;
+  return filter(params, function(x){ return x === syntax._; }).join(', ') || na_msg;
 }
 
 function format_stock(stock, head, tail, args_count, instance_mark){
