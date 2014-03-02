@@ -1,6 +1,6 @@
 'use strict';
-var Installer = require('./lib/installer');
-var array_of = require('./lib/array-of');
+var array_of = require('./lib/utils/array-of');
+var installer = require('./lib/utils/installer');
 var errors = require('./lib/errors');
 var syntax = require('./lib/syntax'),
     _ = syntax.hole.value;
@@ -19,7 +19,7 @@ function purry(f){
 
 // Setup syntax installion commands.
 
-var globalBootstrapper = Installer.global(syntax.lookup);
+var globalBootstrapper = installer.global(syntax.lookup);
 
 purry.install = function installPurry(mappings){
   globalBootstrapper.install(mappings);
