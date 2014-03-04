@@ -2,7 +2,9 @@
 var format = require('util').format;
 var color = require('ansicolors');
 var syntax = require('../../lib/syntax');
-var revLookupOrPass = require('../../lib/utils/rev-lookup-or-pass');
+var lu = require('../../lib/utils/prelude'),
+    space = lu.space,
+    rev_lookup_or_pass = lu.rev_lookup_or_pass;
 var lo = require('lodash'),
     first = lo.first,
     pluck = lo.pluck,
@@ -63,7 +65,7 @@ function create_report(test){
 }
 
 function format_argument(arg){
-  return revLookupOrPass(syntax.tokens, arg);
+  return rev_lookup_or_pass(syntax.tokens, arg);
 }
 
 function format_arguments(args){
@@ -90,9 +92,7 @@ function format_stock(stock, head, tail, args_count, instance_mark){
   return format('\n%s   (%s)\n%s\n%s\n%s\n', stock_s, argued_stat_s, mark_symbols, mark_indexes, ins_mark_s);
 }
 
-function space(size){
-  return lo.reduce(lo.range(0, size), function(acc){ return acc + ' ';}, '');
-}
+
 
 function format_array(array){
   return format('[%s]', array.join(', '));

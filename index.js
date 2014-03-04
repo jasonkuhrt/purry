@@ -1,6 +1,7 @@
 'use strict';
-var array_of = require('./lib/utils/array-of');
-var augment = require('./lib/utils/augment');
+var lu = require('./lib/utils/prelude'),
+    augment = lu.augment,
+    array_of = lu.array_of;
 var installer = require('./lib/utils/installer');
 var errors = require('./lib/errors');
 var syntax = require('./lib/syntax');

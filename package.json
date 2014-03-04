@@ -42,5 +42,8 @@
   "bugs": {
     "url": "https://github.com/jasonkuhrt/purry/issues"
   },
-  "homepage": "https://github.com/jasonkuhrt/purry"
+  "homepage": "https://github.com/jasonkuhrt/purry",
+  "dependencies": {
+    "stack-trace": "0.0.9"
+  }
 }
