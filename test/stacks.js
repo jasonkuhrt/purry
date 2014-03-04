@@ -9,12 +9,13 @@ var padd = purry(add);
 var add1 = padd(1);
 
 // add1(2, ___, 'foo', ___);
-add1(___, module, ___, ___);
+add1(___, module, 45, 45, 45);
+// add1(___, module, ___, ___);
 // add1('1');
 
 
-function add(a, b){
-  assert(typeof a === 'number');
-  assert(typeof b === 'number');
-  return a + b;
+function add(num1, num2){
+  assert(typeof num1 === 'number');
+  assert(typeof num2 === 'number');
+  return num1 + num2;
 }

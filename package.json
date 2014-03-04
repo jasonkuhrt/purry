@@ -44,6 +44,7 @@
   },
   "homepage": "https://github.com/jasonkuhrt/purry",
   "dependencies": {
-    "stack-trace": "0.0.9"
+    "stack-trace": "0.0.9",
+    "args-list": "~0.3.1"
   }
 }

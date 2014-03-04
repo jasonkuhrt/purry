@@ -76,12 +76,6 @@ function format_invocation(args){
   return color.brightBlue(format('(%s)', format_arguments(args)));
 }
 
-function format_params(params){
-  var na_msg = params.length ?
-      format('N/A (function is primed with %d arguments)', params.length) :
-      format('N/A (function is vargs or maybe not take any arguments?') ;
-  return filter(params, function(x){ return x === syntax.tokens._; }).join(', ') || na_msg;
-}
 
 function format_stock(stock, head, tail, args_count, instance_mark){
   var stock_s = format_arguments(stock);
@@ -104,6 +98,5 @@ exports.stock = format_stock;
 exports.arg_test = format_test_history;
 exports.create_report = create_report;
 exports.argument = format_argument;
-exports.params = format_params;
 exports.arguments = format_arguments;
 exports.invocation = format_invocation;
