@@ -1,6 +1,6 @@
 'use strict';
 /* global describe */
-require('./lib/assert-extras');
+
 var purry = require('../').install();
 var util = require('./lib/util'),
     create_fixed_echo = util.create_fixed_echo;
@@ -18,6 +18,10 @@ describe('purry', function(){
   describe('partialing a fixed-params-function', function(){
     var f = create_fixed_echo(6);
     test_partialing_fixed(f);
+    require('./error-too-many-pins')(f);
+    require('./error-too-many-args')(f);
+    require('./error-incomplete-holes')(f);
+    require('./error-delaying-with-hole')(f);
     test_partialing(f.check, f);
   });
 

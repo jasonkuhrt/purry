@@ -7,17 +7,9 @@ var util = require('./lib/util');
 
 module.exports = function(is_result, f){
 
-  it('throws if holes are used without a pin and fewer args than params', function(){
-    assert.throws_too_few_args(function(){
-      f(0,1,_);
-    });
-  });
 
-  it('throws if more than one pin is used', function(){
-    assert.throws_pin(function(){
-      f(0,___,1,___,2);
-    });
-  });
+
+
 
 
   describe('left', function(){

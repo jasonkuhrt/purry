@@ -1,49 +1,12 @@
-/* global it, describe, _, ___ */
 'use strict';
-var assert = require('assert');
+/* global it, describe, _, ___ */
+
 var util = require('./lib/util'),
     create_fixed_echo = util.create_fixed_echo;
 
 
 
 module.exports = function(f){
-  describe('throws if args outnumber params', function(){
-    it('Out-of-bounds holes', function(){
-      assert.throws_too_many_args(function(){
-        f(1,2,3,4,_,_,_,_,_);
-      });
-    });
-
-    it('Out-of-bounds r2l', function(){
-      assert.throws_too_many_args(function(){
-        f(1,2,3,4,___,_,_,_,_,_);
-      });
-    });
-
-    it('Out-of-bounds by 1 value because of hole', function(){
-      assert.throws_too_many_args(function(){
-        // 6 is beyond param count which is 4 but 5 args given
-        f.check(f(_,1,2,_,_,_)(_,3,4,5,6)(0));
-      });
-    });
-
-    it('1-pin and 1-hole', function(){
-      assert.throws_too_many_args(function(){
-        f(0,1,2,3,4,5,___)(___,_);
-      });
-    });
-
-    it('1 hole', function(){
-      assert.throws_too_many_args(function(){
-        f(0,1,2,3,4,5,___)(_);
-      });
-    });
-
-    it('except if using 1-pin delaying technique', function(){
-      f.check(f(0,1,2,3,4,5,___)/*loaded!*/(___)/*delay*/()/*exec*/);
-    });
-
-  });
 
   describe('curry/partial mixing', function(){
     it('delays invocation when partialing or any params unplugged', function(){
