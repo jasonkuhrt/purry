@@ -1,5 +1,5 @@
-'use strict';
 /* globals _, ___ */
+'use strict';
 
 var purry = require('../').install();
 var assert = require('assert');
@@ -9,8 +9,12 @@ var padd = purry(add);
 var add1 = padd(1);
 
 // add1(2, ___, 'foo', ___);
-doit(add1)(___, module, 45, 45, 45);
+doit(add1)(2, ___, 'foo', ___);
+// doit(add1)(___, module, 45, 45, 45);
 // add1(___, module, 45, 45, 45);
+
+// add1(_); // TODO this doesn't throw???
+// padd(_);
 
 function doit(f){
   return function(){
