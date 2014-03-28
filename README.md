@@ -1,4 +1,4 @@
-# purry [![Build Status](https://travis-ci.org/jasonkuhrt/purry.png?branch=master)](https://travis-ci.org/jasonkuhrt/purry) [![Code Climate](https://codeclimate.com/github/jasonkuhrt/purry.png)](https://codeclimate.com/github/jasonkuhrt/purry) 
+# purry [![Build Status](https://travis-ci.org/jasonkuhrt/purry.png?branch=master)](https://travis-ci.org/jasonkuhrt/purry)
 
   Symbiotic, high-performance currying and partial application
 
