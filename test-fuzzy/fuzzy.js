@@ -3,13 +3,13 @@
 
 var is = require('assert');
 var lu = require('../lib/utils/prelude');
-var format = require('./lib/format');
+var format = require('../test/lib/format');
 var color = require('ansicolors');
 // var u = require('util');
 // var log = require('debug')('fuzzy');
 var purry = require('../').install();
 var gen_instance = require('./lib/generate-args');
-var util = require('./lib/util'),
+var util = require('../test/lib/util'),
     gen_ints = util.gen_ints;
 var lo = require('lodash'),
     first = lo.first,

@@ -6,8 +6,8 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha ./test/index.js --reporter spec",
     "test-dev": "./node_modules/.bin/mocha ./test/index.js --reporter spec --watch",
-    "test-fuzzy": "PURRY_HISTORY=true node ./test/fuzzy",
-    "test-fuzzy-debug": "PURRY_DEBUG=true DEBUG=fuzzy node ./test/fuzzy --report 2",
+    "test-fuzzy": "PURRY_HISTORY=true node ./test-fuzzy/fuzzy",
+    "test-fuzzy-debug": "PURRY_DEBUG=true DEBUG=fuzzy node ./test-fuzzy/fuzzy --report 2",
     "dev": "./node_modules/.bin/mocha ./test/index.js --reporter spec --watch",
     "bench-slow": "node ./bench/index.js | tee bench/bench-results-$(date +%s).txt",
     "bench-fast": "node ./bench/index.js 0.1 | tee bench/bench-results-$(date +%s).txt",

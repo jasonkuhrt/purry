@@ -1,4 +1,7 @@
-var util = require('./util'),
+/* global _, ___*/
+'use strict';
+
+var util = require('../../test/lib/util'),
     random_bisect = util.random_bisect,
     gen_holes = util.gen_holes,
     random_indexes = util.random_indexes,
@@ -47,7 +50,7 @@ function Gen_Instance(args_pool, options_){
   // var args_pool_ = without_indexes(picks, args_pool);
   // Return two values; the args and updated args_pool
   return { args:args, new_pool:new_pool, picks:picks };
-};
+}
 
 
 function gen_picks(args_pool){
@@ -69,8 +72,8 @@ function use_picks_split(picks, args_pool){
 
   function use_picks_for(args_pool){
     return function(picks, dir){
-      return use_picks(dir, picks, args_pool)
-    }
+      return use_picks(dir, picks, args_pool);
+    };
   }
 }
 
@@ -80,7 +83,7 @@ function use_picks_dir(dir, picks, args_pool){
   var pick_range = range.apply(null, [[0, max(picks)+1], [min(picks), size(args_pool)]][dir]);
   // Construct an instance which is the picked args with holes
   // making up anything that was skipped between picks.
-  var args = map(pick_range, function(index){ return contains(picks, index) ? args_pool[index] : _ ; })
+  var args = map(pick_range, function(index){ return contains(picks, index) ? args_pool[index] : _ ; });
   // Add random trailing holes
   // TODO remove gen'd trailing holes given that it is now
   // considered an error.
@@ -99,7 +102,7 @@ function handle_pin(dir, is_strict_pin, args){
 
 // Vparam algorithm
 
-Gen_Instance.vparam = args_gen_vparam
+Gen_Instance.vparam = args_gen_vparam;
 
 
 function args_gen_vparam(pool, origin_pool){
@@ -110,33 +113,33 @@ function args_gen_vparam(pool, origin_pool){
 }
 
 
-function args_accomodate_rstock(pin_type, fuzz, args){
-  if (pin_type === 3 || pin_type === 2) return args;
-  var count;
-  var real_args = without(args, _, ___);
-  log('args_accomodate_rstock real_args %j', real_args);
-  each(real_args, function(arg, i){
-    count = count_of_smaller_rstock_args(fuzz.args, arg, real_args[i-1] || 0);
-    log('args_accomodate_rstock arg %d  |  count_of_smaller_rstock_args %d', arg, count);
-    args.splice.apply(args, [args.indexOf(arg), 0].concat(amass(partial(identity, _), count)));
-  });
-  return args;
+// function args_accomodate_rstock(pin_type, fuzz, args){
+//   if (pin_type === 3 || pin_type === 2) return args;
+//   var count;
+//   var real_args = without(args, _, ___);
+//   log('args_accomodate_rstock real_args %j', real_args);
+//   each(real_args, function(arg, i){
+//     count = count_of_smaller_rstock_args(fuzz.args, arg, real_args[i-1] || 0);
+//     log('args_accomodate_rstock arg %d  |  count_of_smaller_rstock_args %d', arg, count);
+//     args.splice.apply(args, [args.indexOf(arg), 0].concat(amass(partial(identity, _), count)));
+//   });
+//   return args;
 
-  function count_of_smaller_rstock_args(args_history, arg, but_greater_than){
-    var count = 0;
-    each(args_history, function(historical_args){
-      log('count_of_smaller_rstock_args indexOf ___', historical_args.indexOf(___))
-      if (historical_args.indexOf(___) >= 0){
-        each(without(historical_args.slice(historical_args.indexOf(___)+1), _), function(historical_arg){
-          // console.log(historical_arg);
-          log('historical_arg %d in range', historical_arg, but_greater_than < historical_arg && historical_arg < arg)
-          if (but_greater_than < historical_arg && historical_arg < arg) count++;
-        })
-      }
-    })
-    return count;
-  }
-}
+//   function count_of_smaller_rstock_args(args_history, arg, but_greater_than){
+//     var count = 0;
+//     each(args_history, function(historical_args){
+//       log('count_of_smaller_rstock_args indexOf ___', historical_args.indexOf(___))
+//       if (historical_args.indexOf(___) >= 0){
+//         each(without(historical_args.slice(historical_args.indexOf(___)+1), _), function(historical_arg){
+//           // console.log(historical_arg);
+//           log('historical_arg %d in range', historical_arg, but_greater_than < historical_arg && historical_arg < arg)
+//           if (but_greater_than < historical_arg && historical_arg < arg) count++;
+//         })
+//       }
+//     })
+//     return count;
+//   }
+// }
 
 // Private Library.
 
@@ -172,10 +175,10 @@ var args_concat = curry(function(is_append, dir, values, args){
   return is_ldir(dir) === is_append ? args.concat(values) : values.concat(args) ;
 });
 
-args_append = args_concat(true);
-lha_append = args_append(ldir);
-args_prepend = args_concat(false);
-rha_prepend = args_prepend(rdir);
+var args_append = args_concat(true);
+var lha_append = args_append(ldir);
+var args_prepend = args_concat(false);
+var rha_prepend = args_prepend(rdir);
 
 
 Gen_Instance.lpin = lpin;
