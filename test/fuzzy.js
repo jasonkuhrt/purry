@@ -1,140 +1,201 @@
+/* global _, ___ */
+'use strict';
+
+var is = require('assert');
+var lu = require('../lib/utils/prelude');
 var format = require('./lib/format');
-var log = require('debug')('fuz');
-var debug = require('../lib/debug');
-var purry = require('../');
+var color = require('ansicolors');
+// var u = require('util');
+// var log = require('debug')('fuzzy');
+var purry = require('../').install();
 var gen_instance = require('./lib/generate-args');
 var util = require('./lib/util'),
-    gen_bool = util.gen_bool,
-    gen_ints = util.gen_ints,
-    amass = util.amass;
+    gen_ints = util.gen_ints;
 var lo = require('lodash'),
-    range = lo.range,
     first = lo.first,
     last = lo.last,
-    random = lo.random,
     isEqual = lo.isEqual,
     isFunction = lo.isFunction,
     isEmpty = lo.isEmpty,
     difference = lo.difference,
     size = lo.size,
-    each = lo.each,
-    map = lo.map,
-    filter = lo.filter,
-    without = lo.without,
-    times = lo.times,
-    contains = lo.contains;
+    times = lo.times;
 
 
 
-/*
-Create a list of arguments that we will fuzzily apply. We want to automatically apply the arguments to the purried echo function such that the arguments are returned in the same order as this list.
-
-The tricky affair is that we want to have the arguments supplied to echo using purry features randomly, yet not so random that we are not giving the arguments in the right order. Its important that we write correct fuzzy logic so that we don't mistake fuzzy-testing bugs with purry bugs!
-*/
-
-
-// Prepare the test settings
-
-var show = Number(process.argv[3]) || 0;
-var count = Number(process.argv[2]) || 100;
-console.log('\nFuzzy Test settings: display_report_mode %d | times %d', show, count);
 
 
 
-// Do the tests
+// Prepare the test settings.
 
-var reports = [];
+var argv_conf = {
+  default: {
+    report: 1,
+    count: 1000
+
+  }
+};
+
+var conf = require('minimist')(process.argv.slice(2), argv_conf);
+var passes = 0;
+
+// Do the test.
+
+console.log('\nFuzzy Test settings: report %d | count %d', conf.report, conf.count);
+times(conf.count, challenge);
+console.log('\nFuzzy Test results: %s passed and %s failed', color.green(passes), color.red(conf.count - passes));
+
+function should_report(is_pass){
+  return  (conf.report === 2) ||
+          (conf.report === 0 && is_pass) ||
+          (conf.report === 1 && !is_pass);
+}
 
 
-console.log('Fuzzy results: %d passed and %d failed', size((reports, 'is_pass')), size(lo.reject(reports, 'is_pass')));
+
 
 
 
 
 // Private Library
 
-function make_and_run_test(){
-  return report_fuzz(test_resolve(create_test()));
-  function create_test(){
-    return [create_iteration()];
-    function create_iteration(){
-      var pool = gen_ints(1, 8);
-      var is_vparams = false; //gen_bool();
-      var f = util.create_echo(is_vparams, size(pool));
-      var args = gen_instance(pool);
-      return Model(is_vparams, f, pool, args);
+function challenge(){
+  var iters = resolve(seed_test(), []);
+  // console.log(u.inspect(iters, { depth:Infinity }));
+  var is_pass = validate_final_result(iters);
+  var report = format.create_report(is_pass, iters);
+  if (should_report(is_pass)) console.log(report);
+  passes++;
+}
+
+function resolve(iter_seed, iters){
+  var iters_ = iters.concat([do_iter(iter_seed)]);
+  return is_iter_final(last(iters_)) ? iters_ : resolve(seed_iter(last(iters_)), iters_) ;
+}
+
+function seed_iter(iter){
+  return Iter(iter.to.f_returned,
+    iter.to.params,
+    iter.to.pool,
+    gen_instance(iter.to.pool));
+}
+
+function validate_final_result(iters){
+  var ex = first(iters).from.pool;
+  var ac = last(iters).to.f_returned;
+  // log('validate_final_result? %j %j', ex, ac);
+  return isEqual(ac, ex);
+}
+
+/*
+seed_test :: -> Test
+*/
+function seed_test(){
+  var pool = gen_ints(0, 5);
+  var args = gen_instance(pool);
+  var params = lu.array_of(size(pool), _);
+  var f = util.create_fixed_echo(size(pool));
+  var test = Iter(f, params, pool, args);
+  // log('seed_test %j', test);
+  return test;
+}
+
+function do_iter(iter){
+  iter.to.f_returned = iter.from.f.apply(null, iter.from.f_args);
+  iter.to.f_iterated = last(lo.cloneDeep(iter.to.f_returned.purry_history));
+  delete iter.to.f_returned.purry_history;
+  validate_iter(iter);
+  return iter;
+}
+
+function validate_iter(iter){
+  validate_from_params(iter);
+  validate_to_params(iter);
+  validate_args(iter);
+  return iter;
+}
+
+function validate_args(iter){
+  var ex = iter.from.f_args;
+  var ac = iter.to.f_iterated.args;
+  is.deepEqual(ex, ac);
+}
+
+function validate_from_params(iter){
+  var ex = iter.from.params;
+  var ac = first(iter.to.f_iterated.resolve).params;
+  is.deepEqual(ex, ac);
+}
+
+function validate_to_params(iter){
+  var ex = iter.to.params;
+  var ac = last(iter.to.f_iterated.resolve).params;
+  is.deepEqual(ex, ac);
+}
+
+
+
+/*
+
+*/
+function Iter(f, params, pool, gend){
+  return {
+    from: {
+      params: params,
+      pool: pool,
+      f_args: gend.args,
+      f: f
+    },
+    to: {
+      params: update_params(params, pool, gend.picks),
+      pool: gend.new_pool
     }
-  }
-}
 
-
-function Model(is_vparams, f, pool, args){
-  return {
-    f: f,
-    is_vparams: is_vparams,
-    pool: pool,
-    args: args
   };
 }
 
-
-// f, [a] -> [a]
-function test_resolve(test){
-  var next = test_step(test);
-  test.concat(next)
-  // If iter is resolved return test
-  return is_iter_resolved(next) ? test : test_resolve(test) ;
+function update_params(params, pool, indexes){
+  var params_ = lo.cloneDeep(params);
+  lo.each(indexes, function(ind){
+    params_[pool[ind]] = pool[ind];
+  });
+  return params_;
 }
 
 
-function test_step(test){
-  var iter = last(test);
-  var _f, _pool, _args, origin;
-  if (iter.is_vparams) {
-    _f = iter.f.apply(null, iter.args);
-    _pool = difference(iter.pool, iter.args);
-    _args = gen_instance.vparam(iter.pool, first(test).pool);
-    _args = guard_invocation(iter, _args);
-  } else {
-    _f = iter.f.apply(null, iter.args);
-    _pool = difference(iter.pool, iter.args);
-    _args = gen_instance(iter.pool);
-  }
-  return Model(iter.is_vparams, _f, _pool, _args);
-  // vparam functions don't support currying so invoke at the first chance (no delay syntax).
-  // This function will add a left-pin to args
-  // if all the params have not been argued yet (and the args are not already dealyed).
-  function guard_invocation(fuzz, args){
-    return !isEmpty(last(fuzz.pool)) && !args_contains_delay(args) ? gen_instance.lpin(args) : args ;
-  }
+/*
+is_iter_resolved :: Iter a -> Bool b
+
+Either f is exhausted
+or the pool is exhausted AND the last args isn't delayed.
+
+*/
+function is_iter_final(iter){
+  // log('is_iter_resolved? %j', (is_f_exhaused(iter) || is_pool_exhausted(iter)));
+  return is_f_exhaused(iter) || is_pool_exhausted(iter);
 }
 
 
-function report_fuzz(test){
-  var is_pass = isEqual(last(test).f, first(test).pool);
-  return {
-    is_pass: is_pass,
-    string: format.create_report(is_pass, test)
-  };
+/*
+is_pool_exhausted :: Iter a -> Bool b
+*/
+function is_pool_exhausted(iter){
+  return (isEmpty(iter.to.pool) && !args_contains_delay(iter.from.f_args));
 }
 
 
-function display_report(display_mode){
-  return function(report){
-    if (display_mode === 3 || Boolean(display_mode) === report.is_pass) console.log(report.string)
-  }
+/*
+is_f_exhaused :: Iter a -> Bool b
+*/
+function is_f_exhaused(iter){
+  return !isFunction(iter.to.f_returned);
 }
 
 
-// Fuzz -> Bool
-// Either the function is exhausted
-// or the pool is exhausted AND the last arg set had no delay.
-function is_iter_resolved(iter){
-  return !isFunction(iter.f) || (isEmpty(iter.pool) && !args_contains_delay(iter.args));
-}
+/*
+args_contains_delay :: [a] -> Bool
 
-
-// [a] -> Bool
+*/
 function args_contains_delay(args){
   return size(difference([_, ___], args)) < 2;
 }

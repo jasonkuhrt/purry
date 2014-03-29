@@ -42,10 +42,11 @@ function Gen_Instance(args_pool, options_){
   var dir = options.dir();
   var picks = gen_picks(args_pool);
   var args = do_use_picks(dir, is_strict_pin, picks, args_pool);
+  var new_pool = without_indexes(picks, args_pool);
   // Remove the picked arguments from the args_pool
   // var args_pool_ = without_indexes(picks, args_pool);
   // Return two values; the args and updated args_pool
-  return {args:args, args_pool:without_indexes(picks, args_pool)};
+  return { args:args, new_pool:new_pool, picks:picks };
 };
 
 

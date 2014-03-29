@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha ./test/index.js --reporter spec",
+    "test-dev": "./node_modules/.bin/mocha ./test/index.js --reporter spec --watch",
+    "test-fuzzy": "PURRY_HISTORY=true node ./test/fuzzy",
+    "test-fuzzy-debug": "PURRY_DEBUG=true DEBUG=fuzzy node ./test/fuzzy --report 2",
     "dev": "./node_modules/.bin/mocha ./test/index.js --reporter spec --watch",
-    "dev-test": "./node_modules/.bin/mocha ./test/index.js --reporter spec --watch",
-    "fuzzy-test": "node ./test/fuzzy",
     "bench-slow": "node ./bench/index.js | tee bench/bench-results-$(date +%s).txt",
     "bench-fast": "node ./bench/index.js 0.1 | tee bench/bench-results-$(date +%s).txt",
     "bench-sketch": "node ./bench/index.js 0.1"
@@ -30,7 +31,9 @@
     "benchmark": "~1.0.0",
     "lodash": "~2.4.1",
     "debug": "~0.7.4",
-    "ansicolors": "~0.3.2"
+    "ansicolors": "~0.3.2",
+    "minimist": "0.0.8",
+    "assert-plus": "~0.1.5"
   },
   "directories": {
     "test": "test"

@@ -1,26 +1,24 @@
+/* global _*/
+'use strict';
+
 var purry = require('../../');
 var assert = require('assert');
 var lo = require('lodash'),
     clone = lo.clone,
-    isEmpty = lo.isEmpty,
     contains = lo.contains,
     times = lo.times,
     map = lo.map,
     range = lo.range,
     random = lo.random,
-    size = lo.size,
-    min = lo.min,
     each = lo.each,
-    max = lo.max,
-    defaults = lo.defaults,
-    sortBy = lo.sortBy,
-    curry = lo.curry;
-    partial = lo.partial;
+    partial = lo.partial,
     id = lo.identity;
+
+
 
 exports.create_echo = function(is_vparams, size){
   return is_vparams ? exports.create_vparam_echo(size) : exports.create_fixed_echo(size) ;
-}
+};
 
 exports.create_vparam_echo = function(size){
   var f = purry(function(){
@@ -36,9 +34,9 @@ exports.create_fixed_echo = function(size){
   return f;
 
   function do_create(size){
-    var params = map(range(0, size), function(int){ return String.fromCharCode(int+97); });
+    var params = map(range(1, size + 1), function(int){ return String.fromCharCode(int+97); });
     return purry(new Function(params.join(','), 'return Array.prototype.slice.apply(arguments);'));
-  };
+  }
 };
 
 exports.create_checker = function(size){
@@ -51,7 +49,7 @@ exports.create_checker = function(size){
 // Helpers
 exports.gen_holes = function(){
   return exports.amass(partial(id, _), (exports.gen_bool() && exports.gen_bool() ? random(0, 4) : 0 ))
-}
+};
 
 exports.without_indexes = function(blacklist, array){
   var array_ = [];
@@ -59,12 +57,12 @@ exports.without_indexes = function(blacklist, array){
     if (!contains(blacklist, i)) array_.push(item);
   });
   return array_;
-}
+};
 
 // [a] -> [int]
 exports.random_indexes = function(array){
   return random_n_picks(random(0, array.length), array);
-}
+};
 
 // int, [a] -> [int]
 function random_n_picks(how_many, array){
@@ -86,12 +84,12 @@ function select_random(how_many, array){
 // -> Bool
 exports.gen_bool = function(){
   return Boolean(random(0, 1));
-}
+};
 
 // int, int -> [int]
 exports.gen_ints = function(start, up_to){
-  return range(start, random(start, up_to));
-}
+  return range(start, random(start, up_to) + 1);
+};
 
 // (-> a), int -> [a]
 exports.amass = function(f, times_count){
@@ -100,11 +98,11 @@ exports.amass = function(f, times_count){
     amassed.push(f());
   });
   return amassed;
-}
+};
 
 exports.random_bisect = function(array){
   return bisect_at(random_index(array), array);
-}
+};
 
 // int, [a] -> [[a][a]]
 function bisect_at(i, array){
