@@ -51,7 +51,7 @@
       "ie/8..10",
       "firefox/3.5..latest",
       "chrome/22..latest",
-      "safari/5..latest",
+      "safari/4..latest",
       "opera/11..latest"
     ]
   },
