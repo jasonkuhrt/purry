@@ -18,6 +18,8 @@ function purry(f){
   }
 }
 
+
+
 // Setup syntax global installion.
 
 var globalBootstrapper = installer.global(syntax.tokens);
@@ -31,6 +33,8 @@ purry.uninstall = function uninstallPurry(){
   globalBootstrapper.uninstall();
   return purry;
 };
+
+
 
 // Setup token access to support local installation.
 
