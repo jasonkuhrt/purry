@@ -1,9 +1,6 @@
 # purry [![Build Status](https://travis-ci.org/jasonkuhrt/purry.png?branch=master)](https://travis-ci.org/jasonkuhrt/purry)
 
-  Symbiotic, high-performance currying and partial application
+  Symbiotic, high-performance **currying** and **partial application**.
 
-  This project is work-in-progress. I hope to complete a solid version in 2014. Contributions welcome.
-
-## License
-
-  BSD-2-Clause
+# Roadmap
+  I am actively working on this project. I hope to release a genuinely useful iteration in 2014. Contributions and collaborations are more than welcomed. See the tests for what is currently possible, they are truth.
