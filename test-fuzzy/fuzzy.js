@@ -3,7 +3,7 @@
 
 var is = require('assert');
 var lu = require('../lib/utils/prelude');
-var format = require('../test/lib/format');
+var format = require('../lib/debug/format');
 var color = require('ansicolors');
 // var u = require('util');
 // var log = require('debug')('fuzzy');
