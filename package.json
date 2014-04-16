@@ -54,9 +54,9 @@
       "safari/4..latest",
       "opera/11..latest",
       "iphone/1..latest",
-      "iphone/3..latest",
-      "ipad/1..latest",
-      "android-browser/1..latest"
+      "iphone/latest",
+      "ipad/latest",
+      "android-browser/latest"
     ]
   },
   "homepage": "https://github.com/jasonkuhrt/purry",
