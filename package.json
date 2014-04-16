@@ -48,11 +48,15 @@
     "harness": "mocha-tdd",
     "files": "test/index.js",
     "browsers": [
-      "ie/8..10",
-      "firefox/3.5..latest",
+      "ie/8..latest",
+      "firefox/11..latest",
       "chrome/22..latest",
       "safari/4..latest",
-      "opera/11..latest"
+      "opera/11..latest",
+      "iphone/1..latest",
+      "iphone/3..latest",
+      "ipad/1..latest",
+      "android-browser/1..latest"
     ]
   },
   "homepage": "https://github.com/jasonkuhrt/purry",
