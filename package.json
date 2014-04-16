@@ -44,6 +44,17 @@
   "bugs": {
     "url": "https://github.com/jasonkuhrt/purry/issues"
   },
+  "testling": {
+    "harness": "mocha-tdd",
+    "files": "test/index.js",
+    "browsers": [
+      "ie/8..10",
+      "firefox/3.5..latest",
+      "chrome/22..latest",
+      "safari/5..latest",
+      "opera/11..latest"
+    ]
+  },
   "homepage": "https://github.com/jasonkuhrt/purry",
   "dependencies": {
     "stack-trace": "0.0.9",
