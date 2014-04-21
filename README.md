@@ -1,4 +1,6 @@
-# purry [![Build Status](https://travis-ci.org/jasonkuhrt/purry.png?branch=master)](https://travis-ci.org/jasonkuhrt/purry) [![browser support](https://ci.testling.com/jasonkuhrt/purry.png)
+# purry [![Build Status](https://travis-ci.org/jasonkuhrt/purry.png?branch=master)](https://travis-ci.org/jasonkuhrt/purry)
+
+[![browser support](https://ci.testling.com/jasonkuhrt/purry.png)
 ](https://ci.testling.com/jasonkuhrt/purry)
 
   Symbiotic, high-performance **currying** and **partial application**.
