@@ -49,7 +49,7 @@
   "testling": {
     "harness": "mocha-tdd",
     "files": ["test/index.js"],
-    "scripts": ["node_modules/es5-shim/es5-shim.js"],
+    "scripts": ["test/es5-shim.js"],
     "browsers": [
       "ie/8..latest",
       "firefox/11..latest",
