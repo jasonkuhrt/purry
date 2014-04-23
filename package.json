@@ -48,8 +48,8 @@
   },
   "testling": {
     "harness": "mocha-tdd",
+    "scripts": ["test/assets/es5-shim.js"],
     "files": ["test/index.js"],
-    "scripts": ["test/es5-shim.js"],
     "browsers": [
       "ie/8..latest",
       "firefox/11..latest",
