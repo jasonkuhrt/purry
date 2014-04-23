@@ -1,0 +1,18 @@
+framework: mocha
+serve_files:
+  - node_modules/es5-shim/es5-shim.js
+  - browserified.js
+src_fils:
+  - test/index.js
+launchers:
+  node:
+    command: mocha test/index.js --reporter tap
+    protocol: tap
+before_tests: browserify test/index.js -o browserified.js
+on_exit: rm browserified.js
+launch_in_ci:
+  - node
+  - phantomjs
+launch_in_dev:
+  - phantomjs
+  - node
