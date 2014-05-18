@@ -20,6 +20,7 @@
   "main": "index.js",
   "scripts": [
     "index.js",
+    "install.js",
     "lib/**/*.js"
   ]
 }
