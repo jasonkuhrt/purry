@@ -10,6 +10,6 @@
 
 ## Installation
 
-  npm install --save purry
+    npm install --save purry
 
-  component install jasonkuhrt/purry
+    component install jasonkuhrt/purry
