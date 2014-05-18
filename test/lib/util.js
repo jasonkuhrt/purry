@@ -29,15 +29,15 @@ exports.create_vparam_echo = function(size){
 };
 
 exports.create_fixed_echo = function(size){
-  var f = do_create(size);
+  var f = purry(exports.do_create_fixed_echo(size));
   f.check = exports.create_checker(size);
   return f;
-
-  function do_create(size){
-    var params = map(range(1, size + 1), function(int){ return String.fromCharCode(int+97); });
-    return purry(new Function(params.join(','), 'return Array.prototype.slice.apply(arguments);'));
-  }
 };
+
+exports.do_create_fixed_echo = function do_create_fixed_echo(size){
+  var params = map(range(1, size + 1), function(int){ return String.fromCharCode(int+97); });
+  return new Function(params.join(','), 'return Array.prototype.slice.apply(arguments);');
+}
 
 exports.create_checker = function(size){
   return function(actual){
@@ -48,7 +48,7 @@ exports.create_checker = function(size){
 
 // Helpers
 exports.gen_holes = function(){
-  return exports.amass(partial(id, _), (exports.gen_bool() && exports.gen_bool() ? random(0, 4) : 0 ))
+  return exports.amass(partial(id, _), (exports.gen_bool() && exports.gen_bool() ? random(0, 4) : 0 ));
 };
 
 exports.without_indexes = function(blacklist, array){

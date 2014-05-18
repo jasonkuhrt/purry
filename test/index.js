@@ -1,5 +1,5 @@
 'use strict';
-/* global describe */
+/* global describe, it */
 
 var purry = require('../').install();
 var util = require('./lib/util'),
@@ -8,12 +8,26 @@ var util = require('./lib/util'),
 var test_currying = require('./currying');
 var test_partialing_fixed = require('./partialing-fixed-params');
 var test_partialing = require('./partialing');
+var assert = require('assert');
 
 
 
 
 describe('purry', function(){
   test_currying(purry);
+
+  it('.purryFix arbitrarly sets function params to curry', function(){
+    var f = util.do_create_fixed_echo(6);
+    assert.deepEqual([1], purry.purryFix(1, f)(1));
+    assert.deepEqual([1, 2], purry.purryFix(2, f)(1)(2));
+    assert.deepEqual([1, 2, 3], purry.purryFix(3, f)(1)(2)(3));
+  });
+
+  it('.purryAuto figures out how to apply purry', function(){
+    var f = util.do_create_fixed_echo(6);
+    assert.deepEqual([1,2,3,4,5,6], purry.purryAuto(f)(1)(2)(3)(4)(5)(6));
+    assert.deepEqual([1], purry.purryAuto(f, 1)(1));
+  });
 
   describe('partialing a fixed-params-function', function(){
     var f = create_fixed_echo(6);
