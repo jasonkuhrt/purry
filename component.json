@@ -1,14 +1,25 @@
 {
   "name": "purry",
-  "repo": "jasonkuhrt/purry",
+  "repository": "jasonkuhrt/purry",
   "description": "Symbiotic, high-performance currying and partial application",
   "version": "0.0.1",
-  "keywords": [],
+  "keywords": [
+    "functional",
+    "function",
+    "functions",
+    "currying",
+    "partial",
+    "application",
+    "partial-right",
+    "api",
+    "sugar"
+  ],
   "dependencies": {},
   "development": {},
   "license": "MIT",
   "main": "index.js",
   "scripts": [
-    "index.js"
+    "index.js",
+    "lib/**/*.js"
   ]
 }
