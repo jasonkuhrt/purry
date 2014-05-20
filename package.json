@@ -8,7 +8,7 @@
     "test-dev": "testem",
     "test-fuzzy": "PURRY_HISTORY=true node ./test-fuzzy/fuzzy",
     "test-fuzzy-debug": "PURRY_DEBUG=true DEBUG=fuzzy node ./test-fuzzy/fuzzy --report 2",
-    "dev": "mocha ./test/index.js --reporter spec --watch",
+    "dev": "mocha --compilers 'coffee:coffee-script/register' --reporter spec --require 'test/utils/create-echo' --require 'should' --require 'test/utils/globals' --watch",
     "bench-slow": "node ./bench/index.js | tee bench/bench-results-$(date +%s).txt",
     "bench-fast": "node ./bench/index.js 0.1 | tee bench/bench-results-$(date +%s).txt",
     "bench-sketch": "node ./bench/index.js 0.1"
@@ -27,13 +27,15 @@
   "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
   "license": "MIT",
   "devDependencies": {
-    "mocha": "~1.15.1",
-    "benchmark": "~1.0.0",
-    "lodash": "~2.4.1",
-    "debug": "~0.7.4",
-    "minimist": "0.0.8",
     "assert-plus": "~0.1.5",
-    "browserify": "~3.44.2",
+    "benchmark": "~1.0.0",
+    "coffee-script": "^1.7.1",
+    "component": "^1.0.0-rc5",
+    "debug": "~0.7.4",
+    "lodash": "~2.4.1",
+    "minimist": "0.0.8",
+    "mocha": "~1.15.1",
+    "should": "^3.3.1",
     "testem": "~0.6.15"
   },
   "directories": {
@@ -47,9 +49,14 @@
     "url": "https://github.com/jasonkuhrt/purry/issues"
   },
   "testling": {
+    "preprocess": "coffee -c test && component build --dev",
     "harness": "mocha-tdd",
-    "scripts": ["test/assets/es5-shim.js"],
-    "files": ["test/index.js"],
+    "files": [
+      "test/assets/should.js",
+      "build/build.js",
+      "test/utils/*.js",
+      "test/*.js"
+    ],
     "browsers": [
       "ie/8..latest",
       "firefox/11..latest",
@@ -63,8 +70,8 @@
   },
   "homepage": "https://github.com/jasonkuhrt/purry",
   "dependencies": {
-    "stack-trace": "0.0.9",
+    "ansicolors": "~0.3.2",
     "args-list": "~0.3.1",
-    "ansicolors": "~0.3.2"
+    "stack-trace": "0.0.9"
   }
 }

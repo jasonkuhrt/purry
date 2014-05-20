@@ -1,15 +1,20 @@
 framework: mocha
 serve_files:
-  - test/assets/es5-shim.js
-  - browserified.js
-src_fils:
-  - test/index.js
+  - test/assets/should.js
+  - build/build.js
+  - test/utils/*.js
+  - test/*.js
+
+src_files:
+  - test/**/*
+  - lib/**/*.js
+  - index.js
 launchers:
   node:
-    command: mocha test/index.js --reporter tap
+    command: mocha --reporter tap --require 'test/utils/create-echo' --require should --require 'test/utils/globals'
     protocol: tap
-before_tests: browserify test/index.js -o browserified.js
-on_exit: rm browserified.js
+before_tests: node_modules/.bin/coffee -c test && node_modules/.bin/component build --dev
+on_exit: rm test/*.js && rm -rf build
 launch_in_ci:
   - node
   - phantomjs
