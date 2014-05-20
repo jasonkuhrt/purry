@@ -49,7 +49,7 @@
     "url": "https://github.com/jasonkuhrt/purry/issues"
   },
   "testling": {
-    "preprocess": "coffee -c test && component build --dev",
+    "preprocess": "node_modules/.bin/coffee -c test && node_modules/.bin/component build --dev",
     "harness": "mocha-tdd",
     "files": [
       "test/assets/should.js",
