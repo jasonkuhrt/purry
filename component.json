@@ -14,7 +14,9 @@
     "api",
     "sugar"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "scottcorgan/args-list": "*"
+  },
   "development": {},
   "license": "MIT",
   "main": "index.js",
