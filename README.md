@@ -9,7 +9,9 @@
   I am actively working on this project. I hope to release a genuinely useful iteration in 2014. Contributions and collaborations are more than welcomed. See the tests for what is currently possible, they are truth.
 
 ## Installation
-
-    npm install --save purry
-
-    component install jasonkuhrt/purry
+```
+npm install --save purry
+```
+```
+component install jasonkuhrt/purry
+```
