@@ -2,7 +2,7 @@
   "name": "purry",
   "repository": "jasonkuhrt/purry",
   "description": "Symbiotic, high-performance currying and partial application",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": [
     "functional",
     "function",
