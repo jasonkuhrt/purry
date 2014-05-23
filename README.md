@@ -10,12 +10,12 @@
 
 ## Installation
 
-Node:
+Server:
 ```
 npm install --save purry
 ```
 
-Browser:
+Client:
 ```
 component install jasonkuhrt/purry
 ```
