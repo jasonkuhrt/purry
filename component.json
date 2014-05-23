@@ -15,7 +15,8 @@
     "sugar"
   ],
   "dependencies": {
-    "scottcorgan/args-list": "*"
+    "scottcorgan/args-list": "*",
+    "jasonkuhrt/is-platform": "~0.0.1"
   },
   "development": {
     "lodash/lodash": "^2.4.1"
