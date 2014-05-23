@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "scottcorgan/args-list": "*",
-    "jasonkuhrt/is-platform": "~0.0.1"
+    "jasonkuhrt/plat": "~0.1.0"
   },
   "development": {
     "lodash/lodash": "^2.4.1"
