@@ -1,1 +1,1 @@
-return require('./index').install();
+module.exports = require('./index').install();
