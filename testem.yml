@@ -20,4 +20,6 @@ launch_in_ci:
   - phantomjs
 launch_in_dev:
   - phantomjs
+  - safari
+  - chrome
   - node

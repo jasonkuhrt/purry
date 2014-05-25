@@ -27,6 +27,7 @@
   "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
   "license": "MIT",
   "devDependencies": {
+    "ansicolors": "~0.3.2",
     "assert-plus": "~0.1.5",
     "benchmark": "~1.0.0",
     "coffee-script": "^1.7.1",
@@ -70,9 +71,7 @@
   },
   "homepage": "https://github.com/jasonkuhrt/purry",
   "dependencies": {
-    "ansicolors": "~0.3.2",
     "args-list": "~0.3.1",
-    "plat": "^0.1.0",
-    "stack-trace": "0.0.9"
+    "plat": "^0.1.0"
   }
 }

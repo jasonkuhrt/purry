@@ -1,21 +1,21 @@
 /*global create_fixed_echo, eq */
 'use strict';
 
-var glo = typeof GLOBAL === 'undefined' ? window : GLOBAL ;
+var globe = typeof GLOBAL === 'undefined' ? window : GLOBAL ;
 
 try {
-  glo['purry'] = require('../../index').install();
+  globe['purry'] = require('../../index').install();
 } catch (err) {
-  glo.purry = require('purry').install();
+  globe.purry = require('purry').install();
 }
 
-glo.eq = function eq(a, b, c){
+globe.eq = function eq(a, b, c){
   a.should.eql(b, c);
 };
 
-glo.echo6 = create_fixed_echo(6);
+globe.echo6 = create_fixed_echo(6);
 
-glo.throws = function throws(f, code){
+globe.throws = function throws(f, code){
   var threw = false;
   try {
     f();
@@ -28,7 +28,7 @@ glo.throws = function throws(f, code){
 };
 
 
-glo.throws_not = function throws_not(f){
+globe.throws_not = function throws_not(f){
   var threw = false;
   try {
     f();
