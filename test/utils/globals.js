@@ -1,13 +1,10 @@
 /*global create_fixed_echo, eq */
 'use strict';
 
-var globe = typeof GLOBAL === 'undefined' ? window : GLOBAL ;
+var is_client = typeof GLOBAL === 'undefined';
+var globe = is_client ? window : GLOBAL ;
 
-try {
-  globe['purry'] = require('../../index').install();
-} catch (err) {
-  globe.purry = require('purry').install();
-}
+globe['purry'] = (is_client ? require('purry') : require('../../index')).install() ;
 
 globe.eq = function eq(a, b, c){
   a.should.eql(b, c);

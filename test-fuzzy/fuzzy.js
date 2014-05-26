@@ -3,11 +3,11 @@
 
 var is = require('assert');
 var lu = require('../lib/utils/prelude');
-var format = require('../lib/debug/format');
+var create_report = require('./lib/create-report');
 var color = require('ansicolors');
 // var u = require('util');
 // var log = require('debug')('fuzzy');
-var purry = require('../').install();
+var purry = require('../install');
 var gen_instance = require('./lib/generate-args');
 var util = require('../test/lib/util'),
     gen_ints = util.gen_ints;
@@ -63,7 +63,7 @@ function challenge(){
   var iters = resolve(seed_test(), []);
   // console.log(u.inspect(iters, { depth:Infinity }));
   var is_pass = validate_final_result(iters);
-  var report = format.create_report(is_pass, iters);
+  var report = create_report(is_pass, iters);
   if (should_report(is_pass)) console.log(report);
   passes++;
 }
