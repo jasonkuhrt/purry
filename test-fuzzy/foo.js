@@ -9,9 +9,10 @@ var p = require('../install');
 
 var a = p(function(accumulator, index, collection){ return [accumulator, index, collection]; });
 
+console.log(a(_))
 // p(function(){ return arguments; });
 // a(___, _, 5, _);
-a(5, _, _, ___);
+// a(5, _, _, ___);
 // a(_, ___, 5, _);
 // a(___, ___, ___);
 // a(_);
