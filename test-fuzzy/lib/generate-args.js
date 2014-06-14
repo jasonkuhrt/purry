@@ -1,5 +1,5 @@
 /* global _, ___*/
-'use strict';
+
 
 var util = require('../../test/lib/util'),
     random_bisect = util.random_bisect,

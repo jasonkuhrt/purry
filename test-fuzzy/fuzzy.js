@@ -1,5 +1,4 @@
 /* global _, ___ */
-'use strict';
 
 var is = require('assert');
 var lu = require('../lib/utils/prelude');

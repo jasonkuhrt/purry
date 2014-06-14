@@ -1,5 +1,4 @@
 /*global _, ___*/
-'use strict';
 
 process.on('uncaughtException', function(err){
   console.log(err.stack);

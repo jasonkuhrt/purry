@@ -1,5 +1,4 @@
 /* globals _, ___ */
-'use strict';
 
 var purry = require('../').install();
 var assert = require('assert');
