@@ -20,7 +20,8 @@
   },
   "development": {
     "lodash/lodash": "^2.4.1",
-    "chaijs/chai": "^1.9.1"
+    "chaijs/chai": "^1.9.1",
+    "jasonkuhrt/plat": "~0.1.0"
   },
   "license": "MIT",
   "main": "index.js",
