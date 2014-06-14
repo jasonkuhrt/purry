@@ -10,12 +10,7 @@
 
 ## Installation
 
-Server:
-```
-npm install --save purry
-```
+Server | Client
+-------|--------
+`npm install --save purry` | `component install jasonkuhrt/purry`
 
-Client:
-```
-component install jasonkuhrt/purry
-```
