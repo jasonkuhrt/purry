@@ -10,7 +10,7 @@ src_files:
   - index.js
 launchers:
   node:
-    command: mocha --reporter tap --require 'test/utils/create-echo' --require 'test/utils/globals'
+    command: node_modules/.bin/mocha --reporter tap --require 'test/utils/create-echo'
     protocol: tap
 before_tests: node_modules/.bin/coffee -c test && node_modules/.bin/component build --dev
 on_exit: rm test/*.js && rm -rf build
