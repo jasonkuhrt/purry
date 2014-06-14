@@ -1,49 +1,42 @@
-'use strict';
-
 var pe = require('./lib/utils/prelude'),
-    array_of = pe.array_of;
-var algo_fixed = require('./lib/algo-fixed');
-var syntax = require('./lib/syntax');
+    array_of = pe.array_of
+var algo_fixed = require('./lib/algo-fixed')
+var syntax = require('./lib/syntax')
 
 
 
-module.exports = purryAuto;
+module.exports = purry
 
-purryAuto.purryAuto = purryAuto;
-purryAuto.purryVar = purryVar;
-purryAuto.purryFix = purryFix;
+purry.auto = purry_auto
+purry.vari = purry_vari
+purry.fix = purry_fix
 
-purryAuto.purry1 = function purry1(f){ return purryFix(1, f); };
-purryAuto.purry2 = function purry2(f){ return purryFix(2, f); };
-purryAuto.purry3 = function purry3(f){ return purryFix(3, f); };
-purryAuto.purry4 = function purry4(f){ return purryFix(4, f); };
-purryAuto.purry5 = function purry5(f){ return purryFix(5, f); };
+purry.purry1 = function purry1(f){ return purry_fix(1, f) }
+purry.purry2 = function purry2(f){ return purry_fix(2, f) }
+purry.purry3 = function purry3(f){ return purry_fix(3, f) }
+purry.purry4 = function purry4(f){ return purry_fix(4, f) }
+purry.purry5 = function purry5(f){ return purry_fix(5, f) }
 
-purryAuto.install = require('./lib/install')(purryAuto);
+purry.install = require('./lib/install')(purry)
 
 
 
-function purryAuto(f, psize){
-  return psize    ? purryFix(psize, f) :
-         f.length ? purryFix(f.length, f) :
-         purryVar(f) ;
-}
-
-var errors = require('./lib/errors');
-function purryVar(/* f */){
-  throw errors.no_vargs_support();
-}
-
-function purryFix(psize, f){
-  return algo_fixed(f, array_of(psize, syntax.hole.val), psize, 0, psize-1);
+function purry(f, psize){
+  return  psize === 0 ?   purry_vari(f)       :
+          psize > 0   ?   purry_fix(psize, f) :
+                          purry_auto(f)
 }
 
 
+function purry_auto(f){
+  return f.length ? purry_fix(f.length, f) : purry_vari(f)
+}
 
+var errors = require('./lib/errors')
+function purry_vari(/* f */){
+  throw errors.no_vargs_support()
+}
 
-
-
-
-
-
-
+function purry_fix(psize, f){
+  return algo_fixed(f, array_of(psize, syntax.hole.val), psize, 0, psize-1)
+}
