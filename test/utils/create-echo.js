@@ -1,5 +1,4 @@
 /* global purry, eq */
-'use strict';
 
 var glo = typeof GLOBAL === 'undefined' ? window : GLOBAL ;
 var lo = require('lodash'),

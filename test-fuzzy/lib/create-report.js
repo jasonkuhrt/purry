@@ -1,5 +1,3 @@
-'use strict';
-
 var format = require('util').format;
 var inspct = require('../../lib/introspect');
 var last = require('../../lib/utils/prelude').last;

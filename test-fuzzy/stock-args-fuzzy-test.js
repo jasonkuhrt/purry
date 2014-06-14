@@ -1,4 +1,3 @@
-'use strict';
 var lo = require('lodash'),
     isFunction = lo.isFunction,
     isEmpty = lo.isEmpty,

@@ -1,5 +1,5 @@
 /*global create_fixed_echo, eq */
-'use strict';
+
 
 var is_client = typeof GLOBAL === 'undefined';
 var globe = is_client ? window : GLOBAL ;
