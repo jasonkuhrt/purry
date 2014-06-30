@@ -80,7 +80,8 @@ The act of "pinning" arguments to a function's parameters. Differences from curr
   [['Sarah', 30], ['Ryan', 32], ['Timmy', 2]].map(psmith)
   // [{ first: 'Sarah', last: 'Smith', age: 30 }, ...]
   ```
-  Learn more in @fogus's tour de force [Functional JavaScript](http://www.functionaljavascript.com/) in the "Partial Application" section in Chapter 5. Function-Building Functions. It includes many examples, use-cases, diagrams, etc. Note he does not discuss holes as that is a purry-only feature. Learn more about holes from Purry's own docs.
+
+Learn more in @fogus's tour de force [Functional JavaScript](http://www.functionaljavascript.com/) in the "Partial Application" section in Chapter 5. Function-Building Functions. It includes many examples, use-cases, diagrams, etc. Note he does not discuss holes as that is a purry-only feature. Learn more about holes from Purry's own docs.
 
 
 
