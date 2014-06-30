@@ -65,8 +65,6 @@ The act of "pinning" arguments to a function's parameters. Differences from curr
   add(1)(2) // 3
   add(1,___)(2,___)() // 3
   ```
-Learn more in @fogus's tour de force [Functional JavaScript](http://www.functionaljavascript.com/) in the "Partial Application" section in Chapter 5. Function-Building Functions. It includes many examples, use-cases, diagrams, etc.
-
 3. Partial application under purry's auspicious implementation has an additional feature in addition to pinning left-to-right pins or right-to-left: holes. Holes allow saving arguments against any arbitrary point in the parameter list. Behold a contrived example:
 
   ```js
@@ -82,7 +80,8 @@ Learn more in @fogus's tour de force [Functional JavaScript](http://www.function
   [['Sarah', 30], ['Ryan', 32], ['Timmy', 2]].map(psmith)
   // [{ first: 'Sarah', last: 'Smith', age: 30 }, ...]
   ```
-Learn more by reading purry's documentation.
+  Learn more in @fogus's tour de force [Functional JavaScript](http://www.functionaljavascript.com/) in the "Partial Application" section in Chapter 5. Function-Building Functions. It includes many examples, use-cases, diagrams, etc. Note he does not discuss holes as that is a purry-only feature. Learn more about holes from Purry's own docs.
+
 
 
 
