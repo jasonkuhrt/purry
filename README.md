@@ -65,8 +65,8 @@ The act of "pinning" arguments to a function's parameters. Differences from curr
   add(1)(2) // 3
   add(1,___)(2,___)() // 3
   ```
-3. Partial application under purry's auspicious implementation has an additional feature in addition to pinning left-to-right pins or right-to-left: holes. Holes allow saving arguments against any arbitrary point in the parameter list. Behold a contrived example:
 
+3. Partially applying may also work through the use of wild-cards. Wild-cards allow arbitrary parameters to be partially applied; Example:
   ```js
   // Assume a "person" function that accepts three
   // parameters: first name, last name, age.
@@ -74,14 +74,17 @@ The act of "pinning" arguments to a function's parameters. Differences from curr
   // { first: 'John', last: 'Smith', age: 30 }
 
   // When dealing with families, repeating the last
-  // name can be redundant. Holes could help:
+  // name can be redundant. Wild-cards could help:
   var psmith = person(_, 'Smith', _)
 
   [['Sarah', 30], ['Ryan', 32], ['Timmy', 2]].map(psmith)
-  // [{ first: 'Sarah', last: 'Smith', age: 30 }, ...]
+  // [{ first: 'Sarah', last: 'Smith', age: 30 },
+  //  { first: 'Ryan', last: 'Smith', age: 32 },
+  //  { first: 'Timmy', last: 'Smith', age: 2 }
+  // ]
   ```
 
-Learn more in @fogus's tour de force [Functional JavaScript](http://www.functionaljavascript.com/) in the "Partial Application" section in Chapter 5. Function-Building Functions. It includes many examples, use-cases, diagrams, etc. Note he does not discuss holes as that is a purry-only feature. Learn more about holes from Purry's own docs.
+Learn more in @fogus's tour de force [Functional JavaScript](http://www.functionaljavascript.com/) in the "Partial Application" section in Chapter 5. Function-Building Functions. It includes many examples, use-cases, diagrams, etc. Note he does not discuss wild-cards as that is a purry-specific feature. Learn more about wild-cards from Purry's own docs.
 
 
 
