@@ -1,0 +1,34 @@
+{
+  "name": "purry",
+  "main": "index.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jasonkuhrt/purry",
+  "authors": [
+    "Jason Kuhrt <jasonkuhrt@me.com>"
+  ],
+  "description": "Symbiotic, high-performance currying and partial application with wild-card support",
+  "keywords": [
+    "functional",
+    "function",
+    "functions",
+    "currying",
+    "partial",
+    "application",
+    "partial-right",
+    "api",
+    "sugar",
+    "wild-cards"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "plat": "~0.1.1",
+    "args-list": "jasonkuhrt/args-list#bower-support"
+  }
+}

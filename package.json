@@ -22,7 +22,8 @@
     "application",
     "partial-right",
     "api",
-    "sugar"
+    "sugar",
+    "wild-cards"
   ],
   "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
   "license": "MIT",

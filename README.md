@@ -11,7 +11,7 @@
 
 Server | Client
 -------|--------
-`npm install --save purry` | `component install jasonkuhrt/purry`
+`npm install --save purry` | `bower install --save purry` or `component install jasonkuhrt/purry`
 
 ## Guide
 

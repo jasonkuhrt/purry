@@ -12,11 +12,12 @@
     "application",
     "partial-right",
     "api",
-    "sugar"
+    "sugar",
+    "wild-cards"
   ],
   "dependencies": {
     "scottcorgan/args-list": "*",
-    "jasonkuhrt/plat": "~0.1.0"
+    "jasonkuhrt/plat": "~0.1.1"
   },
   "development": {
     "lodash/lodash": "^2.4.1",
